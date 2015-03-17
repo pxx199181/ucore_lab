@@ -9,6 +9,7 @@
 #include <intr.h>
 #include <pmm.h>
 #include <kmonitor.h>
+#include <x86.h>
 int kern_init(void) __attribute__((noreturn));
 void grade_backtrace(void);
 static void lab1_switch_test(void);
@@ -37,7 +38,7 @@ kern_init(void) {
 
     //LAB1: CAHLLENGE 1 If you try to do it, uncomment lab1_switch_test()
     // user/kernel mode switch test
-    //lab1_switch_test();
+    lab1_switch_test();
 
     /* do nothing */
     while (1);
@@ -80,15 +81,17 @@ lab1_print_cur_status(void) {
     cprintf("%d:  ss = %x\n", round, reg4);
     round ++;
 }
-
+#define int_gate(gate) {asm volatile ("int %0" :: "i" (gate));}
 static void
 lab1_switch_to_user(void) {
     //LAB1 CHALLENGE 1 : TODO
+    int_gate(T_SWITCH_TOU); 
 }
 
 static void
 lab1_switch_to_kernel(void) {
     //LAB1 CHALLENGE 1 :  TODO
+    int_gate(T_SWITCH_TOK);
 }
 
 static void
