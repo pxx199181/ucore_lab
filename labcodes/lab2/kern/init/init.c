@@ -81,15 +81,17 @@ lab1_print_cur_status(void) {
     cprintf("%d:  ss = %x\n", round, reg4);
     round ++;
 }
-
+#define int_gate(gate) {asm volatile ("int %0" :: "i" (gate));}
 static void
 lab1_switch_to_user(void) {
     //LAB1 CHALLENGE 1 : TODO
+    int_gate(T_SWITCH_TOU); 
 }
 
 static void
 lab1_switch_to_kernel(void) {
     //LAB1 CHALLENGE 1 :  TODO
+    int_gate(T_SWITCH_TOK);
 }
 
 static void
