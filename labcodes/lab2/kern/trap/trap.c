@@ -49,11 +49,16 @@ idt_init(void) {
       */
      int i;
      for (i = 0; i < 256; i++) {
-            SETGATE(idt[i], 0, KERNEL_CS, __vectors[i], DPL_KERNEL);
+            if (i == T_SYSCALL) {
+                SETGATE(idt[i], 1, KERNEL_CS, __vectors[i], DPL_USER)
+            }
+            else if (i < IRQ_OFFSET) {
+                SETGATE(idt[i], 1, KERNEL_CS, __vectors[i], DPL_KERNEL)
+            }
+            else {
+                SETGATE(idt[i], 0, KERNEL_CS, __vectors[i], DPL_KERNEL)
+            }
      }
-     SETGATE(idt[T_SYSCALL], 1, KERNEL_CS, __vectors[T_SYSCALL], DPL_USER);
-
-     SETGATE(idt[T_SWITCH_TOU], 0, KERNEL_CS, __vectors[T_SWITCH_TOU], DPL_KERNEL);
      SETGATE(idt[T_SWITCH_TOK], 0, KERNEL_CS, __vectors[T_SWITCH_TOK], DPL_USER);
 
      lidt(&idt_pd);
