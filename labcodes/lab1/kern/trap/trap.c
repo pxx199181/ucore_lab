@@ -145,6 +145,8 @@ print_regs(struct pushregs *regs) {
     cprintf("  eax  0x%08x\n", regs->reg_eax);
 }
 /* trap_dispatch - dispatch based on what type of trap occurred */
+
+#define int_gate(gate) {asm volatile ("int %0" :: "i" (gate));}
 struct trapframe *tmp_kernel_frame, tmp_user_frame;
 static void
 trap_dispatch(struct trapframe *tf) {

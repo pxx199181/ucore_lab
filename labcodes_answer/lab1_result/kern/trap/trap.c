@@ -178,7 +178,7 @@ trap_dispatch(struct trapframe *tf) {
             switchk2u = *tf;
             switchk2u.tf_cs = USER_CS;
             switchk2u.tf_ds = switchk2u.tf_es = switchk2u.tf_ss = USER_DS;
-            switchk2u.tf_esp = (uint32_t)tf + sizeof(struct trapframe) - 8;
+            switchk2u.tf_esp = (uint32_t)tf + sizeof(struct trapframe);// - 8;
 		
             // set eflags, make sure ucore can use io under user mode.
             // if CPL > IOPL, then cpu will generate a general protection.
@@ -194,8 +194,8 @@ trap_dispatch(struct trapframe *tf) {
             tf->tf_cs = KERNEL_CS;
             tf->tf_ds = tf->tf_es = KERNEL_DS;
             tf->tf_eflags &= ~FL_IOPL_MASK;
-            switchu2k = (struct trapframe *)(tf->tf_esp - (sizeof(struct trapframe) - 8));
-            memmove(switchu2k, tf, sizeof(struct trapframe) - 8);
+            switchu2k = (struct trapframe *)(tf->tf_esp) - (sizeof(struct trapframe));// - 8));
+            memmove(switchu2k, tf, sizeof(struct trapframe));// - 8);
             *((uint32_t *)tf - 1) = (uint32_t)switchu2k;
         }
         break;

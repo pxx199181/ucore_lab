@@ -113,5 +113,14 @@ lab1_switch_test(void) {
     cprintf("+++ switch to kernel mode +++\n");
     lab1_switch_to_kernel();
     lab1_print_cur_status();
+
+
+    lab1_print_cur_status();
+    cprintf("+++ switch to  user  mode +++\n");
+    lab1_switch_to_user();
+    lab1_print_cur_status();
+    cprintf("+++ switch to kernel mode +++\n");
+    lab1_switch_to_kernel();
+    lab1_print_cur_status();
 }
 
