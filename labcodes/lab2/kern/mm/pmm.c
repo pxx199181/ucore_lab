@@ -186,6 +186,14 @@ nr_free_pages(void) {
 }
 
 /* pmm_init - initialize the physical memory management */
+
+char* GetMemInfo(int type){
+    switch (type){
+        case 1: return "E820_ARM";break;
+        case 2: return "E820_ARR";break;
+        default:return "not defined";break;
+    }
+}
 static void
 page_init(void) {
     struct e820map *memmap = (struct e820map *)(0x8000 + KERNBASE);
@@ -195,8 +203,13 @@ page_init(void) {
     int i;
     for (i = 0; i < memmap->nr_map; i ++) {
         uint64_t begin = memmap->map[i].addr, end = begin + memmap->map[i].size;
+        
         cprintf("  memory: %08llx, [%08llx, %08llx], type = %d.\n",
                 memmap->map[i].size, begin, end - 1, memmap->map[i].type);
+        /*
+        cprintf("  memory: %08llx, [%08llx, %08llx], type = %d, -->%s.\n",
+                memmap->map[i].size, begin, end - 1, memmap->map[i].type, GetMemInfo(memmap->map[i].type));
+        */
         if (memmap->map[i].type == E820_ARM) {
             if (maxpa < end && begin < KMEMSIZE) {
                 maxpa = end;
@@ -368,6 +381,19 @@ get_pte(pde_t *pgdir, uintptr_t la, bool create) {
      *   PTE_W           0x002                   // page table/directory entry flags bit : Writeable
      *   PTE_U           0x004                   // page table/directory entry flags bit : User can access
      */
+    
+    pde_t *tmp_pde = &pgdir[PDX(la)];
+    if (!(*tmp_pde & PTE_P)) {
+        struct Page* new_page = NULL;
+        if (create && (new_page = alloc_page()) != NULL) {
+            set_page_ref(new_page, 1);
+            memset(page2kva(new_page), 0, PGSIZE);
+            *tmp_pde = page2pa(new_page) | PTE_P | PTE_W | PTE_U;
+        }
+        else
+            return NULL;
+    }
+    return &((pte_t *)KADDR((*tmp_pde)&0xFFFFF000))[PTX(la)];
 #if 0
     pde_t *pdep = NULL;   // (1) find page directory entry
     if (0) {              // (2) check if entry is not present
@@ -416,6 +442,15 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
      * DEFINEs:
      *   PTE_P           0x001                   // page table/directory entry flags bit : Present
      */
+    if (!(*ptep & PTE_P)) {
+        return ;
+    }
+    struct Page* page = pte2page(*ptep);
+    if (page_ref_dec(page) == 0){
+        free_page(page);
+    }
+    *ptep = 0;
+    tlb_invalidate(pgdir, la);
 #if 0
     if (0) {                      //(1) check if this page table entry is present
         struct Page *page = NULL; //(2) find corresponding page to pte
