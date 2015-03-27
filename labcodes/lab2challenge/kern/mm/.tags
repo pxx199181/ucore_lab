@@ -1,0 +1,25 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUDDY_SYSTEM_SIZE	buddySystem_pmm.c	57;"	d	file:
+basic_check	buddySystem_pmm.c	/^basic_check(void) {$/;"	f	file:
+buddySystem_add_to_list	buddySystem_pmm.c	/^buddySystem_add_to_list(struct Page *t_base, size_t t_n) {$/;"	f	file:
+buddySystem_alloc_pages	buddySystem_pmm.c	/^buddySystem_alloc_pages(size_t n) {$/;"	f	file:
+buddySystem_check	buddySystem_pmm.c	/^buddySystem_check(void) {$/;"	f	file:
+buddySystem_free_pages	buddySystem_pmm.c	/^buddySystem_free_pages(struct Page *base, size_t n) {$/;"	f	file:
+buddySystem_init	buddySystem_pmm.c	/^buddySystem_init(void) {$/;"	f	file:
+buddySystem_init_memmap	buddySystem_pmm.c	/^buddySystem_init_memmap(struct Page *base, size_t n) {$/;"	f	file:
+buddySystem_nr_free_pages	buddySystem_pmm.c	/^buddySystem_nr_free_pages(void) {$/;"	f	file:
+buddySystem_pmm_manager	buddySystem_pmm.c	/^const struct pmm_manager buddySystem_pmm_manager = {$/;"	v	typeref:struct:pmm_manager
+free_area	buddySystem_pmm.c	/^free_area_t free_area[BUDDY_SYSTEM_SIZE];$/;"	v
+free_list	buddySystem_pmm.c	60;"	d	file:
+get_buddy	buddySystem_pmm.c	/^get_buddy(int pageIndex, int layer){$/;"	f	file:
+get_size_index	buddySystem_pmm.c	/^int get_size_index(int n) {$/;"	f
+mem_begin	buddySystem_pmm.c	/^int mem_begin, mem_end;$/;"	v
+mem_end	buddySystem_pmm.c	/^int mem_begin, mem_end;$/;"	v
+nr_free	buddySystem_pmm.c	61;"	d	file:
+ppn2page	buddySystem_pmm.c	/^ppn2page(int index) {$/;"	f	file:
+print_buddySystem_free_link	buddySystem_pmm.c	/^void print_buddySystem_free_link(){$/;"	f
