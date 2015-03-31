@@ -120,7 +120,7 @@ default_alloc_pages(size_t n) {
         //modified by pxx --------------begin
         struct Page *p = page;
         for (; p != page + n; p ++) {
-            //why not 1, is referenced
+            //why not 1, is referenced,(solved, 1 is seted later)
             set_page_ref(p, 0);
             //assert(page_ref(p) == 0);
         }
