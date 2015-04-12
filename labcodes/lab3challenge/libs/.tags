@@ -1,0 +1,160 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ELF_MAGIC	elf.h	6;"	d
+E_BAD_PROC	error.h	6;"	d
+E_FAULT	error.h	10;"	d
+E_INVAL	error.h	7;"	d
+E_NO_FREE_PROC	error.h	9;"	d
+E_NO_MEM	error.h	8;"	d
+E_UNSPECIFIED	error.h	5;"	d
+MAXERROR	error.h	13;"	d
+NULL	defs.h	5;"	d
+RAND_MAX	stdlib.h	5;"	d
+ROUNDDOWN	defs.h	43;"	d
+ROUNDUP	defs.h	49;"	d
+__HAVE_ARCH_MEMCPY	x86.h	283;"	d
+__HAVE_ARCH_MEMMOVE	x86.h	264;"	d
+__HAVE_ARCH_MEMSET	x86.h	250;"	d
+__HAVE_ARCH_STRCMP	x86.h	210;"	d
+__HAVE_ARCH_STRCPY	x86.h	234;"	d
+__LIBS_ATOMIC_H__	atomic.h	2;"	d
+__LIBS_DEFS_H__	defs.h	2;"	d
+__LIBS_ELF_H__	elf.h	2;"	d
+__LIBS_ERROR_H__	error.h	2;"	d
+__LIBS_LIST_H__	list.h	2;"	d
+__LIBS_STDARG_H__	stdarg.h	2;"	d
+__LIBS_STDIO_H__	stdio.h	2;"	d
+__LIBS_STDLIB_H__	stdlib.h	2;"	d
+__LIBS_STRING_H__	string.h	2;"	d
+__LIBS_X86_H__	x86.h	2;"	d
+__always_inline	defs.h	8;"	d
+__list_add	list.h	/^__list_add(list_entry_t *elm, list_entry_t *prev, list_entry_t *next) {$/;"	f
+__list_del	list.h	/^__list_del(list_entry_t *prev, list_entry_t *next) {$/;"	f
+__memcpy	x86.h	/^__memcpy(void *dst, const void *src, size_t n) {$/;"	f
+__memmove	x86.h	/^__memmove(void *dst, const void *src, size_t n) {$/;"	f
+__memset	x86.h	/^__memset(void *s, char c, size_t n) {$/;"	f
+__noinline	defs.h	9;"	d
+__noreturn	defs.h	10;"	d
+__strcmp	x86.h	/^__strcmp(const char *s1, const char *s2) {$/;"	f
+__strcpy	x86.h	/^__strcpy(char *dst, const char *src) {$/;"	f
+barrier	x86.h	21;"	d
+bool	defs.h	/^typedef int bool;$/;"	t
+breakpoint	x86.h	/^breakpoint(void) {$/;"	f
+buf	printfmt.c	/^    char *buf;          \/\/ address pointer points to the first unused memory$/;"	m	struct:sprintbuf	file:
+change_bit	atomic.h	/^change_bit(int nr, volatile void *addr) {$/;"	f
+clear_bit	atomic.h	/^clear_bit(int nr, volatile void *addr) {$/;"	f
+cli	x86.h	/^cli(void) {$/;"	f
+cnt	printfmt.c	/^    int cnt;            \/\/ the number of characters that have been placed in this buffer$/;"	m	struct:sprintbuf	file:
+do_div	x86.h	6;"	d
+e_ehsize	elf.h	/^    uint16_t e_ehsize;    \/\/ size of this elf header$/;"	m	struct:elfhdr
+e_elf	elf.h	/^    uint8_t e_elf[12];$/;"	m	struct:elfhdr
+e_entry	elf.h	/^    uint32_t e_entry;     \/\/ entry point if executable$/;"	m	struct:elfhdr
+e_flags	elf.h	/^    uint32_t e_flags;     \/\/ architecture-specific flags, usually 0$/;"	m	struct:elfhdr
+e_machine	elf.h	/^    uint16_t e_machine;   \/\/ 3=x86, 4=68K, etc.$/;"	m	struct:elfhdr
+e_magic	elf.h	/^    uint32_t e_magic;     \/\/ must equal ELF_MAGIC$/;"	m	struct:elfhdr
+e_phentsize	elf.h	/^    uint16_t e_phentsize; \/\/ size of an entry in program header$/;"	m	struct:elfhdr
+e_phnum	elf.h	/^    uint16_t e_phnum;     \/\/ number of entries in program header or 0$/;"	m	struct:elfhdr
+e_phoff	elf.h	/^    uint32_t e_phoff;     \/\/ file position of program header or 0$/;"	m	struct:elfhdr
+e_shentsize	elf.h	/^    uint16_t e_shentsize; \/\/ size of an entry in section header$/;"	m	struct:elfhdr
+e_shnum	elf.h	/^    uint16_t e_shnum;     \/\/ number of entries in section header or 0$/;"	m	struct:elfhdr
+e_shoff	elf.h	/^    uint32_t e_shoff;     \/\/ file position of section header or 0$/;"	m	struct:elfhdr
+e_shstrndx	elf.h	/^    uint16_t e_shstrndx;  \/\/ section number that contains section name strings$/;"	m	struct:elfhdr
+e_type	elf.h	/^    uint16_t e_type;      \/\/ 1=relocatable, 2=executable, 3=shared object, 4=core image$/;"	m	struct:elfhdr
+e_version	elf.h	/^    uint32_t e_version;   \/\/ file version, always 1$/;"	m	struct:elfhdr
+ebuf	printfmt.c	/^    char *ebuf;         \/\/ points the end of the buffer$/;"	m	struct:sprintbuf	file:
+elfhdr	elf.h	/^struct elfhdr {$/;"	s
+error_string	printfmt.c	/^static const char * const error_string[MAXERROR + 1] = {$/;"	v	file:
+getint	printfmt.c	/^getint(va_list *ap, int lflag) {$/;"	f	file:
+getuint	printfmt.c	/^getuint(va_list *ap, int lflag) {$/;"	f	file:
+inb	x86.h	/^inb(uint16_t port) {$/;"	f
+insl	x86.h	/^insl(uint32_t port, void *addr, int cnt) {$/;"	f
+int16_t	defs.h	/^typedef short int16_t;$/;"	t
+int32_t	defs.h	/^typedef int int32_t;$/;"	t
+int64_t	defs.h	/^typedef long long int64_t;$/;"	t
+int8_t	defs.h	/^typedef char int8_t;$/;"	t
+intptr_t	defs.h	/^typedef int32_t intptr_t;$/;"	t
+invlpg	x86.h	/^invlpg(void *addr) {$/;"	f
+lcr0	x86.h	/^lcr0(uintptr_t cr0) {$/;"	f
+lcr3	x86.h	/^lcr3(uintptr_t cr3) {$/;"	f
+lidt	x86.h	/^lidt(struct pseudodesc *pd) {$/;"	f
+list_add	list.h	/^list_add(list_entry_t *listelm, list_entry_t *elm) {$/;"	f
+list_add_after	list.h	/^list_add_after(list_entry_t *listelm, list_entry_t *elm) {$/;"	f
+list_add_before	list.h	/^list_add_before(list_entry_t *listelm, list_entry_t *elm) {$/;"	f
+list_del	list.h	/^list_del(list_entry_t *listelm) {$/;"	f
+list_del_init	list.h	/^list_del_init(list_entry_t *listelm) {$/;"	f
+list_empty	list.h	/^list_empty(list_entry_t *list) {$/;"	f
+list_entry	list.h	/^struct list_entry {$/;"	s
+list_entry_t	list.h	/^typedef struct list_entry list_entry_t;$/;"	t	typeref:struct:list_entry
+list_init	list.h	/^list_init(list_entry_t *elm) {$/;"	f
+list_next	list.h	/^list_next(list_entry_t *listelm) {$/;"	f
+list_prev	list.h	/^list_prev(list_entry_t *listelm) {$/;"	f
+ltr	x86.h	/^ltr(uint16_t sel) {$/;"	f
+memcmp	string.c	/^memcmp(const void *v1, const void *v2, size_t n) {$/;"	f
+memcpy	string.c	/^memcpy(void *dst, const void *src, size_t n) {$/;"	f
+memmove	string.c	/^memmove(void *dst, const void *src, size_t n) {$/;"	f
+memset	string.c	/^memset(void *s, char c, size_t n) {$/;"	f
+next	list.h	/^    struct list_entry *prev, *next;$/;"	m	struct:list_entry	typeref:struct:list_entry::
+next	rand.c	/^static unsigned long long next = 1;$/;"	v	file:
+offsetof	defs.h	55;"	d
+outb	x86.h	/^outb(uint16_t port, uint8_t data) {$/;"	f
+outsl	x86.h	/^outsl(uint32_t port, const void *addr, int cnt) {$/;"	f
+outw	x86.h	/^outw(uint16_t port, uint16_t data) {$/;"	f
+p_align	elf.h	/^    uint32_t p_align;  \/\/ required alignment, invariably hardware page size$/;"	m	struct:proghdr
+p_filesz	elf.h	/^    uint32_t p_filesz; \/\/ size of segment in file$/;"	m	struct:proghdr
+p_flags	elf.h	/^    uint32_t p_flags;  \/\/ read\/write\/execute bits$/;"	m	struct:proghdr
+p_memsz	elf.h	/^    uint32_t p_memsz;  \/\/ size of segment in memory (bigger if contains bss）$/;"	m	struct:proghdr
+p_offset	elf.h	/^    uint32_t p_offset; \/\/ file offset of segment$/;"	m	struct:proghdr
+p_pa	elf.h	/^    uint32_t p_pa;     \/\/ physical address, not used$/;"	m	struct:proghdr
+p_type	elf.h	/^    uint32_t p_type;   \/\/ loadable code or data, dynamic linking info,etc.$/;"	m	struct:proghdr
+p_va	elf.h	/^    uint32_t p_va;     \/\/ virtual address to map segment$/;"	m	struct:proghdr
+pd_base	x86.h	/^    uintptr_t pd_base;      \/\/ Base address$/;"	m	struct:pseudodesc
+pd_lim	x86.h	/^    uint16_t pd_lim;        \/\/ Limit$/;"	m	struct:pseudodesc
+ppn_t	defs.h	/^typedef size_t ppn_t;$/;"	t
+prev	list.h	/^    struct list_entry *prev, *next;$/;"	m	struct:list_entry	typeref:struct:list_entry::list_entry
+printfmt	printfmt.c	/^printfmt(void (*putch)(int, void*), void *putdat, const char *fmt, ...) {$/;"	f
+printnum	printfmt.c	/^printnum(void (*putch)(int, void*), void *putdat,$/;"	f	file:
+proghdr	elf.h	/^struct proghdr {$/;"	s
+pseudodesc	x86.h	/^struct pseudodesc {$/;"	s
+rand	rand.c	/^rand(void) {$/;"	f
+rcr0	x86.h	/^rcr0(void) {$/;"	f
+rcr1	x86.h	/^rcr1(void) {$/;"	f
+rcr2	x86.h	/^rcr2(void) {$/;"	f
+rcr3	x86.h	/^rcr3(void) {$/;"	f
+read_dr	x86.h	/^read_dr(unsigned regnum) {$/;"	f
+read_ebp	x86.h	/^read_ebp(void) {$/;"	f
+read_eflags	x86.h	/^read_eflags(void) {$/;"	f
+set_bit	atomic.h	/^set_bit(int nr, volatile void *addr) {$/;"	f
+size_t	defs.h	/^typedef uintptr_t size_t;$/;"	t
+snprintf	printfmt.c	/^snprintf(char *str, size_t size, const char *fmt, ...) {$/;"	f
+sprintbuf	printfmt.c	/^struct sprintbuf {$/;"	s	file:
+sprintputch	printfmt.c	/^sprintputch(int ch, struct sprintbuf *b) {$/;"	f	file:
+srand	rand.c	/^srand(unsigned int seed) {$/;"	f
+sti	x86.h	/^sti(void) {$/;"	f
+strchr	string.c	/^strchr(const char *s, char c) {$/;"	f
+strcmp	string.c	/^strcmp(const char *s1, const char *s2) {$/;"	f
+strcpy	string.c	/^strcpy(char *dst, const char *src) {$/;"	f
+strfind	string.c	/^strfind(const char *s, char c) {$/;"	f
+strlen	string.c	/^strlen(const char *s) {$/;"	f
+strncmp	string.c	/^strncmp(const char *s1, const char *s2, size_t n) {$/;"	f
+strncpy	string.c	/^strncpy(char *dst, const char *src, size_t len) {$/;"	f
+strnlen	string.c	/^strnlen(const char *s, size_t len) {$/;"	f
+strtol	string.c	/^strtol(const char *s, char **endptr, int base) {$/;"	f
+test_bit	atomic.h	/^test_bit(int nr, volatile void *addr) {$/;"	f
+to_struct	defs.h	64;"	d
+uint16_t	defs.h	/^typedef unsigned short uint16_t;$/;"	t
+uint32_t	defs.h	/^typedef unsigned int uint32_t;$/;"	t
+uint64_t	defs.h	/^typedef unsigned long long uint64_t;$/;"	t
+uint8_t	defs.h	/^typedef unsigned char uint8_t;$/;"	t
+uintptr_t	defs.h	/^typedef uint32_t uintptr_t;$/;"	t
+va_arg	stdarg.h	8;"	d
+va_end	stdarg.h	9;"	d
+va_list	stdarg.h	/^typedef __builtin_va_list va_list;$/;"	t
+va_start	stdarg.h	7;"	d
+vprintfmt	printfmt.c	/^vprintfmt(void (*putch)(int, void*), void *putdat, const char *fmt, va_list ap) {$/;"	f
+vsnprintf	printfmt.c	/^vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {$/;"	f
+write_dr	x86.h	/^write_dr(unsigned regnum, uint32_t value) {$/;"	f
+write_eflags	x86.h	/^write_eflags(uint32_t eflags) {$/;"	f
