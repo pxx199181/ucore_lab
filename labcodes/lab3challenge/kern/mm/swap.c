@@ -101,7 +101,7 @@ swap_out(struct mm_struct *mm, int n, int in_tick)
           v=page->pra_vaddr; 
           pte_t *ptep = get_pte(mm->pgdir, v, 0);
           assert((*ptep & PTE_P) != 0);
-
+          //cprintf("-------------swap out:pte(%x), change to pte(%x), addr(%x)-------------\n", *ptep, (page->pra_vaddr/PGSIZE+1)<<8, page->pra_vaddr);
           if (swapfs_write( (page->pra_vaddr/PGSIZE+1)<<8, page) != 0) {
                     cprintf("SWAP: failed to save\n");
                     sm->map_swappable(mm, v, page, 0);
@@ -127,6 +127,7 @@ swap_in(struct mm_struct *mm, uintptr_t addr, struct Page **ptr_result)
      pte_t *ptep = get_pte(mm->pgdir, addr, 0);
      // cprintf("SWAP: load ptep %x swap entry %d to vaddr 0x%08x, page %x, No %d\n", ptep, (*ptep)>>8, addr, result, (result-pages));
     
+     //cprintf("-------------swap in:pte(%x)-------------\n", *ptep);
      int r;
      if ((r = swapfs_read((*ptep), result)) != 0)
      {

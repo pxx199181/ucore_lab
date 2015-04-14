@@ -77,7 +77,7 @@ void print_swap_page_info(struct mm_struct* mm) {
          while((le = list_next(le)) != head){
             struct Page* page = le2page(le, pra_page_link);
             pte_t *ptep = get_pte(mm->pgdir, page->pra_vaddr, 0);
-            cprintf("0x%x(%d, %d)->", *ptep, (*ptep & PTE_A) != 0, (*ptep & PTE_D) != 0);
+            cprintf("0x%x:[%x](%d, %d)->", *ptep, page->pra_vaddr, (*ptep & PTE_A) != 0, (*ptep & PTE_D) != 0);
          }
         cprintf("\n");
          cprintf("pra_addr list:\n");
@@ -142,8 +142,6 @@ _extended_clock_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, i
             cprintf("error\n");
             return -1;
         }
-        if (!(*ptep & PTE_P))
-            continue;
         //check bit set
         int is_a, is_d;
         is_a = *ptep & PTE_A;
@@ -167,7 +165,6 @@ _extended_clock_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, i
                 cprintf("find 1\n");
             }
         }
-        cprintf("=====in raound=====\n");
      }
      //pxx-code-end
      //out_page_le = list_next(head);
@@ -187,45 +184,57 @@ static void waitcount(int count) {
 }
 static int
 _extended_clock_check_swap(void) {
+    extern struct mm_struct *check_mm_struct;
+    print_swap_page_info(check_mm_struct);
     int wait_time = 200000000;
     cprintf("write Virt Page c in _extended_clock_check_swap\n");
     *(unsigned char *)0x3000 = 0x0c;
+    print_swap_page_info(check_mm_struct);
     //assert(pgfault_num==4);
     waitcount(wait_time);
     cprintf("write Virt Page a in _extended_clock_check_swap\n");
     *(unsigned char *)0x1000 = 0x0a;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==4);
     cprintf("write Virt Page d in _extended_clock_check_swap\n");
     *(unsigned char *)0x4000 = 0x0d;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==4);
     cprintf("write Virt Page b in _extended_clock_check_swap\n");
     *(unsigned char *)0x2000 = 0x0b;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==4);
     cprintf("write Virt Page e in _extended_clock_check_swap\n");
     *(unsigned char *)0x5000 = 0x0e;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==5);
     cprintf("write Virt Page b in _extended_clock_check_swap\n");
     *(unsigned char *)0x2000 = 0x0b;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==5);
     cprintf("write Virt Page a in _extended_clock_check_swap\n");
     *(unsigned char *)0x1000 = 0x0a;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==6);
     cprintf("write Virt Page b in _extended_clock_check_swap\n");
     *(unsigned char *)0x2000 = 0x0b;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==7);
     cprintf("write Virt Page c in _extended_clock_check_swap\n");
     *(unsigned char *)0x3000 = 0x0c;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==8);
     cprintf("write Virt Page d in _extended_clock_check_swap\n");
     *(unsigned char *)0x4000 = 0x0d;
+    print_swap_page_info(check_mm_struct);
     waitcount(wait_time);
     //assert(pgfault_num==9);
     return 0;
@@ -262,9 +271,6 @@ _extended_clock_tick_event(struct mm_struct *mm)
         if (ptep == NULL) {
             cprintf("error\n");
             return -1;
-        }
-        if (!(*ptep & PTE_P )) {
-            continue;
         }
         *ptep &= ~(PTE_A | PTE_D);
         cprintf("set one\n");

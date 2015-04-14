@@ -1,4 +1,4 @@
-#<center>lab3 report</center>
+#<center>lab3chellenge report</center>
 * name:pxx
 * id:P14226010
 
@@ -76,6 +76,7 @@
 		具体详情见代码; 
 
 ##练习3: 扩展练习Challenge:实现识别dirty bit的extended clock页替换算法(需要编程)
+## (两种实现, 基于时钟{定时清理标志位}和基于lazy方法{用到是清理标志位}, 分别问lab3challenge和lab3challenge_lazy)
 		这部分实现挺有意思的, 看练习中的提示, 这部分对于页面替换算法实现的比较好, 能够极大通过算法效率, 相关实现代码在
             lab3challenge中, 将对应的fifo命名的函数有extended_clock替换, 实现的设计思路如下:
 		1. 对于这是可交换的物理页来说, 操作和fifo一样, 在此不在赘述:
@@ -84,12 +85,14 @@
             那么就可以直接返回, 不用继续查找下去, 对于后面的情况都需要遍历整个可交换的链表, 由于有优先顺序, 所以在这里定义一个优先级, (0, 0)
             是3, (0, 1)是2, (1, 0)是1, (1, 1)是0, 如果每个页面对应的bit位和上述值对相等时, 就代码该页面的优先级为对应的值, 只有当前页的优先
             级小于所记录的页码优先级时, 才更新记录值, 
-		3. 由于access bit和dirty bit的设置是有CPU来做的, 但是清理需要自己来做, 所以在这定义一个时钟中断, 每个0.5s(是不是有的长啊?)将各
-            个bit位清零. 
-		4. 测试: 这部分的测试, 我采用修改原来fifo中的测试代码, 将测试部分分成两部分, 一部分初始化, 一部分来进行后面的真正测试, 因为清除
+		3. 由于access bit和dirty bit的设置是有CPU来做的, 但是清理需要自己来做, 有两种方法, 一种是定义一个时钟中断, 一种是要用到的时候再做
+            清理工作, 两部分都有实现, 时钟是在每个0.5s(是不是有的长啊?)将各个bit位清零, 而lazy是在触发页异常后才进行. 
+		4. 分两部分测试: 
+		(1)基于时钟测试:   我采用修改原来fifo中的测试代码, 将测试部分分成两部分, 一部分初始化, 一部分来进行后面的真正测试, 因为清除
             标志位是用时钟来处理的, 所以测试部分必须放在时钟启动后面, 而且_extended_clock_check_swap函数中必须德添加延时操作, 以保证下次换出的页
             是在我清除标志位后选出的页, 测试过程通过打印的方式可以看见清除标志位以及选出来的用于换入换出的页. 
-		查找部分实现如下:
+		(2)基于lazy方法测试: 和原来的一样, 只是在打印的时候会多些说明信息.
+		基于时钟部分实现如下:
 ```
      list_entry_t *le, *out_page_le;
      int rank_id = 0;
@@ -244,7 +247,7 @@
 		 while((le = list_next(le)) != head){
 		    struct Page* page = le2page(le, pra_page_link);
 		    pte_t *ptep = get_pte(mm->pgdir, page->pra_vaddr, 0);
-		    cprintf("0x%x(%d, %d)->", *ptep, (*ptep & PTE_A) != 0, (*ptep & PTE_D) != 0);
+		    cprintf("0x%x:[%x](%d, %d)->", *ptep, page->pra_vaddr, (*ptep & PTE_A) != 0, (*ptep & PTE_D) != 0);
 		 }
 		cprintf("\n");
 		 cprintf("pra_addr list:\n");
@@ -268,20 +271,45 @@
 	page fault at 0x00004000: K/W [no page found].
 	set up init env for check_swap over!
 	//连续写, 触发页异常
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
 	write Virt Page c in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
 	100 ticks
 	write Virt Page a in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
 	100 ticks
 	write Virt Page d in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
 	100 ticks
 	100 ticks
 	write Virt Page b in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
 	100 ticks
 	//在清除页标志位之前, 打印结果如下(PTE_A, PTE_D), 可见全是PTE_A和PTE_D的:
 	--------------before clear--------------
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x308067(1, 1)->0x309067(1, 1)->0x30a067(1, 1)->0x30b067(1, 1)->
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
 	pra_addr list:
 	0x1000->0x2000->0x3000->0x4000->
 	--------------------------------------------
@@ -293,7 +321,7 @@
 	--------------after clear--------------
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x308007(0, 0)->0x309007(0, 0)->0x30a007(0, 0)->0x30b007(0, 0)->
+	0x308007:[1000](0, 0)->0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->
 	pra_addr list:
 	0x1000->0x2000->0x3000->0x4000->
 	--------------------------------------------
@@ -303,107 +331,350 @@
 	//4个可用的页的标志全为(0, 0), 如下:
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x308007(0, 0)->0x309007(0, 0)->0x30a007(0, 0)->0x30b007(0, 0)->
+	0x308007:[1000](0, 0)->0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->
 	pra_addr list:
 	0x1000->0x2000->0x3000->0x4000->
+	//选出的swap的页就是开头的0x309007,这时跟fifo一样, 还看不出extend_clock的特点:
 	find 3
 	c0307004
 	1000
-	//选出的swap的页就是开头的0x309007,这时跟fifo一样, 还看不出extend_clock的特点:
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309007(0, 0)->0x30a007(0, 0)->0x30b007(0, 0)->
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->
 	pra_addr list:
 	0x2000->0x3000->0x4000->
 	swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
-	100 ticks
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->0x5000->
 	100 ticks
 	//写b和写a, 此时页物理a(因为a页排在最前面)已经被换出, 而e是刚进来的一页, 写a的时候会发生swap_in, 这时下面选出来的页就会是前面的空闲页了:
 	write Virt Page b in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309067:[2000](1, 1)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->0x5000->
+	100 ticks
 	100 ticks
 	write Virt Page a in _extended_clock_check_swap
 	page fault at 0x00001000: K/W [no page found].
-
 	//换出前:
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x30a007(0, 0)->0x30b007(0, 0)->0x308067(1, 1)->
+	0x309067:[2000](1, 1)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
 	pra_addr list:
 	0x2000->0x3000->0x4000->0x5000->
-	=====in raound=====
+	//由下面可见选出来的是0x300, 符合优先级
 	find 3
 	c030700c
 	3000
-	//换出后, 第二个(0, 0)的页被选出:
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x30b007(0, 0)->0x308067(1, 1)->
+	0x309067:[2000](1, 1)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
 	pra_addr list:
 	0x2000->0x4000->0x5000->
 	swap_out: i 0, store page in vaddr 0x3000 to disk swap entry 4
 	swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309067:[2000](1, 1)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->0x30a067:[1000](1, 1)->
+	pra_addr list:
+	0x2000->0x4000->0x5000->0x1000->
 	100 ticks
+	write Virt Page b in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309067:[2000](1, 1)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->0x30a067:[1000](1, 1)->
+	pra_addr list:
+	0x2000->0x4000->0x5000->0x1000->
 	100 ticks
 	//清除页标志, 后面的情况如上, 不在赘述:
 	--------------before clear--------------
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x30b007(0, 0)->0x308067(1, 1)->0x400(0, 0)->
+	0x309067:[2000](1, 1)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->0x30a067:[1000](1, 1)->
 	pra_addr list:
-	0x2000->0x4000->0x5000->0x3000->
+	0x2000->0x4000->0x5000->0x1000->
 	--------------------------------------------
+	set one
 	set one
 	set one
 	set one
 	--------------after clear--------------
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309007(0, 0)->0x30b007(0, 0)->0x308007(0, 0)->0x400(0, 0)->
+	0x309007:[2000](0, 0)->0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x30a007:[1000](0, 0)->
 	pra_addr list:
-	0x2000->0x4000->0x5000->0x3000->
+	0x2000->0x4000->0x5000->0x1000->
 	--------------------------------------------
-	write Virt Page b in _extended_clock_check_swap
 	100 ticks
 	write Virt Page c in _extended_clock_check_swap
 	page fault at 0x00003000: K/W [no page found].
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x30b007(0, 0)->0x308007(0, 0)->0x400(0, 0)->
+	0x309007:[2000](0, 0)->0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x30a007:[1000](0, 0)->
 	pra_addr list:
-	0x2000->0x4000->0x5000->0x3000->
-	=====in raound=====
+	0x2000->0x4000->0x5000->0x1000->
+	find 3
+	c0307008
+	2000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x30a007:[1000](0, 0)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->
+	swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
+	swap_in: load disk swap entry 4 with swap_page in vadr 0x3000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x30a007:[1000](0, 0)->0x309067:[3000](1, 1)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->0x3000->
+	100 ticks
+	write Virt Page d in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b067:[4000](1, 1)->0x308007:[5000](0, 0)->0x30a007:[1000](0, 0)->0x309067:[3000](1, 1)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->0x3000->
+	100 ticks
+	100 ticks
+	count is -1, total is -31956
+	check_swap() succeeded!
+```
+		基于lazy的方法就简单很多,只要在swap_out的时候, 轮询将各个页的access bit和dirty bit清零就可以了, 可以将时钟部分完全不顾
+		代码如下:
+```
+	     list_entry_t *head=(list_entry_t*) mm->sm_priv;
+	     assert(head != NULL);
+	     assert(in_tick==0);
+	     /* Select the victim */
+	     /*LAB3 EXERCISE 2: YOUR CODE*/ 
+	     //(1)  unlink the  earliest arrival page in front of pra_list_head qeueue
+	     //(2)  set the addr of addr of this page to ptr_page
+	     if (list_empty(head)) {
+		cprintf("list is empty\n");
+		return -1;
+	     }
+
+	    //pxx-code-begin
+	     list_entry_t *le, *out_page_le;
+	     int rank_id = 0;
+	     le = head;
+	     out_page_le = list_next(le);
+	     while((le = list_next(le)) != head){
+
+		struct Page* page = le2page(le, pra_page_link);
+		pte_t *ptep = get_pte(mm->pgdir, page->pra_vaddr, 0);
+
+		if (*ptep == NULL) {
+		    cprintf("error\n");
+		    return -1;
+		}
+
+		//check bit set
+		int is_a, is_d;
+		is_a = *ptep & PTE_A;
+		is_d = *ptep & PTE_D;
+		if (is_a == 0) {
+		    if (is_d == 0 && rank_id < 3) {
+		        rank_id = 3;
+		        out_page_le = le;
+		        cprintf("find 3\n");
+
+		    }
+		    else if (rank_id < 2) {
+		        rank_id = 2;
+		        out_page_le = le;
+		        cprintf("find 2\n");
+		    }
+		}
+		else if (rank_id < 1){
+		    if (is_d == 0) {
+		        rank_id = 1;
+		        out_page_le = le;
+		        cprintf("find 1\n");
+		    }
+		}
+		//clear bit
+		*ptep &= ~(PTE_A|PTE_D);
+	     }
+	     //pxx-code-end
+	     //out_page_le = list_next(head);
+	     list_del(out_page_le);
+	     *ptr_page = le2page(out_page_le, pra_page_link);
+	     cprintf("%x\n", get_pte(mm->pgdir, (*ptr_page)->pra_vaddr, 0));
+	     cprintf("%x\n", (*ptr_page)->pra_vaddr);
+	     print_swap_page_info(mm);
+
+	     return 0;
+```
+		基于lazy方法的测试部分
+```
+	//正常的信息打印
+	page fault at 0x00001000: K/W [no page found].
+	page fault at 0x00002000: K/W [no page found].
+	page fault at 0x00003000: K/W [no page found].
+	page fault at 0x00004000: K/W [no page found].
+	set up init env for check_swap over!
+	//连续写, 触发页异常, 此时有空闲的4页, 不会触发swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	write Virt Page c in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	write Virt Page a in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	write Virt Page d in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	write Virt Page b in _extended_clock_check_swap
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+
+	//写e的时候, 需要加载e的页, 此时需要进行swap
+	write Virt Page e in _extended_clock_check_swap
+	page fault at 0x00005000: K/W [no page found].
+	//swap之前, 打印结果如下(PTE_A, PTE_D), 可见全是PTE_A和PTE_D的:
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308067:[1000](1, 1)->0x309067:[2000](1, 1)->0x30a067:[3000](1, 1)->0x30b067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	c0307004
+	1000
+	//此时选择的是第一个页(也是最先加入的), 然后将各个bit清零:
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->
+	swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
+	//新加入的页在尾部, 是PTE_A和PTE_D为1的:
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->0x5000->
+	write Virt Page b in _extended_clock_check_swap
+	//此后结果与前面同理分析, 在此不在赘述
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->0x5000->
+	write Virt Page a in _extended_clock_check_swap
+	page fault at 0x00001000: K/W [no page found].
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[2000](0, 0)->0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308067:[5000](1, 1)->
+	pra_addr list:
+	0x2000->0x3000->0x4000->0x5000->
+	find 3
+	c0307008
+	2000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->
+	pra_addr list:
+	0x3000->0x4000->0x5000->
+	swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
+	swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x309067:[1000](1, 1)->
+	pra_addr list:
+	0x3000->0x4000->0x5000->0x1000->
+	write Virt Page b in _extended_clock_check_swap
+	page fault at 0x00002000: K/W [no page found].
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30a007:[3000](0, 0)->0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x309067:[1000](1, 1)->
+	pra_addr list:
+	0x3000->0x4000->0x5000->0x1000->
+	find 3
+	c030700c
+	3000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->
+	swap_out: i 0, store page in vaddr 0x3000 to disk swap entry 4
+	swap_in: load disk swap entry 3 with swap_page in vadr 0x2000
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->0x30a067:[2000](1, 1)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->0x2000->
+	write Virt Page c in _extended_clock_check_swap
+	page fault at 0x00003000: K/W [no page found].
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x30b007:[4000](0, 0)->0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->0x30a067:[2000](1, 1)->
+	pra_addr list:
+	0x4000->0x5000->0x1000->0x2000->
 	find 3
 	c0307010
 	4000
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x308007(0, 0)->0x400(0, 0)->
+	0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->0x30a007:[2000](0, 0)->
 	pra_addr list:
-	0x2000->0x5000->0x3000->
+	0x5000->0x1000->0x2000->
 	swap_out: i 0, store page in vaddr 0x4000 to disk swap entry 5
 	swap_in: load disk swap entry 4 with swap_page in vadr 0x3000
-	100 ticks
-	100 ticks
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->0x30a007:[2000](0, 0)->0x30b067:[3000](1, 1)->
+	pra_addr list:
+	0x5000->0x1000->0x2000->0x3000->
 	write Virt Page d in _extended_clock_check_swap
 	page fault at 0x00004000: K/W [no page found].
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x308007(0, 0)->0x30b067(1, 1)->0x500(0, 0)->
+	0x308007:[5000](0, 0)->0x309007:[1000](0, 0)->0x30a007:[2000](0, 0)->0x30b067:[3000](1, 1)->
 	pra_addr list:
-	0x2000->0x5000->0x3000->0x4000->
-	=====in raound=====
+	0x5000->0x1000->0x2000->0x3000->
 	find 3
 	c0307014
 	5000
 	mm_addr:0xc0305000
 	pte_addr list:
-	0x309067(1, 1)->0x30b067(1, 1)->0x500(0, 0)->
+	0x309007:[1000](0, 0)->0x30a007:[2000](0, 0)->0x30b007:[3000](0, 0)->
 	pra_addr list:
-	0x2000->0x3000->0x4000->
+	0x1000->0x2000->0x3000->
 	swap_out: i 0, store page in vaddr 0x5000 to disk swap entry 6
 	swap_in: load disk swap entry 5 with swap_page in vadr 0x4000
-	100 ticks
-	count is -1, total is -31956
+	mm_addr:0xc0305000
+	pte_addr list:
+	0x309007:[1000](0, 0)->0x30a007:[2000](0, 0)->0x30b007:[3000](0, 0)->0x308067:[4000](1, 1)->
+	pra_addr list:
+	0x1000->0x2000->0x3000->0x4000->
+	count is 0, total is 7
 	check_swap() succeeded!
+	++ setup timer interrupts
+	100 ticks
+	100 ticks
+
 ```
 

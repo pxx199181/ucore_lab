@@ -383,6 +383,7 @@ do_pgfault(struct mm_struct *mm, uint32_t error_code, uintptr_t addr) {
             struct Page *page = NULL;
             swap_in(mm, addr, &page);
             perm |= PTE_P;
+            page->pra_vaddr = addr;
             page_insert(mm->pgdir, page, addr, perm);
             swap_map_swappable(mm, addr, page, 1);
         }

@@ -34,6 +34,7 @@ static struct pseudodesc idt_pd = {
 };
 
 /* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S */
+extern uintptr_t __vectors[];
 void
 idt_init(void) {
      /* LAB1 YOUR CODE : STEP 2 */
@@ -48,6 +49,21 @@ idt_init(void) {
       *     You don't know the meaning of this instruction? just google it! and check the libs/x86.h to know more.
       *     Notice: the argument of lidt is idt_pd. try to find it!
       */
+     int i;
+     for (i = 0; i < 256; i++) {
+            if (i == T_SYSCALL) {
+                SETGATE(idt[i], 1, KERNEL_CS, __vectors[i], DPL_USER)
+            }
+            else if (i < IRQ_OFFSET) {
+                SETGATE(idt[i], 1, KERNEL_CS, __vectors[i], DPL_KERNEL)
+            }
+            else {
+                SETGATE(idt[i], 0, KERNEL_CS, __vectors[i], DPL_KERNEL)
+            }
+     }
+     SETGATE(idt[T_SWITCH_TOK], 0, KERNEL_CS, __vectors[T_SWITCH_TOK], DPL_USER);
+
+     lidt(&idt_pd);
 }
 
 static const char *
@@ -136,6 +152,8 @@ print_regs(struct pushregs *regs) {
     cprintf("  eax  0x%08x\n", regs->reg_eax);
 }
 
+#define int_gate(gate) {asm volatile ("int %0" :: "i" (gate));}
+struct trapframe *tmp_kernel_frame, tmp_user_frame;
 static inline void
 print_pgfault(struct trapframe *tf) {
     /* error_code:
@@ -165,7 +183,7 @@ extern struct mm_struct *check_mm_struct;
 static void
 trap_dispatch(struct trapframe *tf) {
     char c;
-
+    static int ticks_record = 0;
     int ret;
 
     switch (tf->tf_trapno) {
@@ -186,6 +204,12 @@ trap_dispatch(struct trapframe *tf) {
          * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
          * (3) Too Simple? Yes, I think so!
          */
+        ticks_record++;
+        if (ticks_record == TICK_NUM)
+        {
+            print_ticks();
+            ticks_record = 0;
+        }
         break;
     case IRQ_OFFSET + IRQ_COM1:
         c = cons_getc();
@@ -197,8 +221,39 @@ trap_dispatch(struct trapframe *tf) {
         break;
     //LAB1 CHALLENGE 1 : YOUR CODE you should modify below codes.
     case T_SWITCH_TOU:
+        cprintf("T_SWITCH_TOU\n");
+        //panic("T_SWITCH_** ??\n");
+        //
+        //
+        if (tf->tf_cs != USER_CS) {
+            tmp_user_frame = *tf;
+            tmp_user_frame.tf_esp = (unsigned int)tf + sizeof(struct trapframe) - 8;
+            tmp_user_frame.tf_cs = USER_CS;
+            tmp_user_frame.tf_ds = USER_DS;
+            tmp_user_frame.tf_ss = USER_DS;
+            tmp_user_frame.tf_es = USER_DS;
+            tmp_user_frame.tf_fs = USER_DS;
+            tmp_user_frame.tf_gs = USER_DS;
+
+            tmp_user_frame.tf_eflags |= FL_IOPL_MASK;
+            *((uint32_t *)tf - 1) = &tmp_user_frame;
+        }
+        break;
     case T_SWITCH_TOK:
-        panic("T_SWITCH_** ??\n");
+        cprintf("T_SWITCH_TOK\n");
+        if (tf->tf_cs != KERNEL_CS) {
+            tf->tf_cs = KERNEL_CS;
+            tf->tf_ds = KERNEL_DS;
+            tf->tf_ss = KERNEL_DS;
+            tf->tf_es = KERNEL_DS;
+            tf->tf_fs = KERNEL_DS;
+            tf->tf_gs = KERNEL_DS;
+            tf->tf_eflags &= ~FL_IOPL_MASK;
+            tmp_kernel_frame = (struct trapframe *)(tf->tf_esp - (sizeof(struct trapframe) - 8));
+            memmove(tmp_kernel_frame, tf, sizeof(struct trapframe) - 8);
+            *((uint32_t *)tf - 1) = (uint32_t)tmp_kernel_frame;
+        }
+        //panic("T_SWITCH_** ??\n");
         break;
     case IRQ_OFFSET + IRQ_IDE1:
     case IRQ_OFFSET + IRQ_IDE2:
