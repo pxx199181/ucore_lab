@@ -58,7 +58,8 @@ int swap_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, 
 int swap_set_unswappable(struct mm_struct *mm, uintptr_t addr);
 int swap_out(struct mm_struct *mm, int n, int in_tick);
 int swap_in(struct mm_struct *mm, uintptr_t addr, struct Page **ptr_result);
-
+void real_check_swap_extended_swap();
+void real_check_swap_extended_swap_init();
 //#define MEMBER_OFFSET(m,t) ((int)(&((t *)0)->m))
 //#define FROM_MEMBER(m,t,a) ((t *)((char *)(a) - MEMBER_OFFSET(m,t)))
 

@@ -233,7 +233,7 @@ check_vma_struct(void) {
     cprintf("check_vma_struct() succeeded!\n");
 }
 
-struct mm_struct *check_mm_struct;
+struct mm_struct *check_mm_struct = NULL;
 
 // check_pgfault - check correctness of pgfault handler
 static void

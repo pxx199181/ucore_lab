@@ -4,10 +4,10 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-BEING_CHECK_VALID_VADDR	swap.c	12;"	d	file:
-CHECK_VALID_PHY_PAGE_NUM	swap.c	15;"	d	file:
-CHECK_VALID_VADDR	swap.c	13;"	d	file:
-CHECK_VALID_VIR_PAGE_NUM	swap.c	11;"	d	file:
+BEING_CHECK_VALID_VADDR	swap.c	13;"	d	file:
+CHECK_VALID_PHY_PAGE_NUM	swap.c	16;"	d	file:
+CHECK_VALID_VADDR	swap.c	14;"	d	file:
+CHECK_VALID_VIR_PAGE_NUM	swap.c	12;"	d	file:
 CR0_AM	mmu.h	258;"	d
 CR0_CD	mmu.h	260;"	d
 CR0_EM	mmu.h	253;"	d
@@ -67,7 +67,7 @@ KERNTOP	memlayout.h	58;"	d
 KMEMSIZE	memlayout.h	57;"	d
 KSTACKPAGE	memlayout.h	68;"	d
 KSTACKSIZE	memlayout.h	69;"	d
-MAX_SEQ_NO	swap.c	17;"	d	file:
+MAX_SEQ_NO	swap.c	18;"	d	file:
 MAX_SWAP_OFFSET_LIMIT	swap.h	17;"	d
 NPDEENTRY	mmu.h	223;"	d
 NPTEENTRY	mmu.h	224;"	d
@@ -145,7 +145,15 @@ __KERN_MM_MMU_H__	mmu.h	2;"	d
 __KERN_MM_PMM_H__	pmm.h	2;"	d
 __KERN_MM_SWAP_FIFO_H__	swap_fifo.h	2;"	d
 __KERN_MM_SWAP_H__	swap.h	2;"	d
+__KERN_MM_SWAP_extended_clock_H__	swap_extended_clock.h	2;"	d
 __KERN_MM_VMM_H__	vmm.h	2;"	d
+_extended_clock_check_swap	swap_extended_clock.c	/^_extended_clock_check_swap(void) {$/;"	f	file:
+_extended_clock_init	swap_extended_clock.c	/^_extended_clock_init(void)$/;"	f	file:
+_extended_clock_init_mm	swap_extended_clock.c	/^_extended_clock_init_mm(struct mm_struct *mm)$/;"	f	file:
+_extended_clock_map_swappable	swap_extended_clock.c	/^_extended_clock_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, int swap_in)$/;"	f	file:
+_extended_clock_set_unswappable	swap_extended_clock.c	/^_extended_clock_set_unswappable(struct mm_struct *mm, uintptr_t addr)$/;"	f	file:
+_extended_clock_swap_out_victim	swap_extended_clock.c	/^_extended_clock_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, int in_tick)$/;"	f	file:
+_extended_clock_tick_event	swap_extended_clock.c	/^_extended_clock_tick_event(struct mm_struct *mm)$/;"	f	file:
 _fifo_check_swap	swap_fifo.c	/^_fifo_check_swap(void) {$/;"	f	file:
 _fifo_init	swap_fifo.c	/^_fifo_init(void)$/;"	f	file:
 _fifo_init_mm	swap_fifo.c	/^_fifo_init_mm(struct mm_struct *mm)$/;"	f	file:
@@ -167,7 +175,7 @@ check_alloc_page	pmm.c	/^check_alloc_page(void) {$/;"	f	file:
 check_boot_pgdir	pmm.c	/^check_boot_pgdir(void) {$/;"	f	file:
 check_content_access	swap.c	/^check_content_access(void)$/;"	f	file:
 check_content_set	swap.c	/^check_content_set(void)$/;"	f	file:
-check_mm_struct	vmm.c	/^struct mm_struct *check_mm_struct;$/;"	v	typeref:struct:mm_struct
+check_mm_struct	vmm.c	/^struct mm_struct *check_mm_struct = NULL;$/;"	v	typeref:struct:mm_struct
 check_pgdir	pmm.c	/^check_pgdir(void) {$/;"	f	file:
 check_pgfault	vmm.c	/^check_pgfault(void) {$/;"	f	file:
 check_ptep	swap.c	/^pte_t * check_ptep[CHECK_VALID_PHY_PAGE_NUM];$/;"	v
@@ -194,7 +202,7 @@ free_area	default_pmm.c	/^free_area_t free_area;$/;"	v
 free_area_t	memlayout.h	/^} free_area_t;$/;"	t	typeref:struct:__anon2
 free_list	default_pmm.c	59;"	d	file:
 free_list	memlayout.h	/^    list_entry_t free_list;         \/\/ the list header$/;"	m	struct:__anon2
-free_list	swap.c	174;"	d	file:
+free_list	swap.c	176;"	d	file:
 free_page	pmm.h	36;"	d
 free_pages	pmm.c	/^free_pages(struct Page *base, size_t n) {$/;"	f
 free_pages	pmm.h	/^    void (*free_pages)(struct Page *base, size_t n);  \/\/ free >=n pages with "base" addr of Page descriptor structures(memlayout.h)$/;"	m	struct:pmm_manager
@@ -243,7 +251,7 @@ name	swap.h	/^     const char *name;$/;"	m	struct:swap_manager
 npage	pmm.c	/^size_t npage = 0;$/;"	v
 nr_free	default_pmm.c	60;"	d	file:
 nr_free	memlayout.h	/^    unsigned int nr_free;           \/\/ # of free pages in this free list$/;"	m	struct:__anon2
-nr_free	swap.c	175;"	d	file:
+nr_free	swap.c	177;"	d	file:
 nr_free_pages	pmm.c	/^nr_free_pages(void) {$/;"	f
 nr_free_pages	pmm.h	/^    size_t (*nr_free_pages)(void);                    \/\/ return the number of free pages $/;"	m	struct:pmm_manager
 nr_map	memlayout.h	/^    int nr_map;$/;"	m	struct:e820map
@@ -269,14 +277,19 @@ pgfault_num	vmm.c	/^volatile unsigned int pgfault_num=0;$/;"	v
 pmm_init	pmm.c	/^pmm_init(void) {$/;"	f
 pmm_manager	pmm.c	/^const struct pmm_manager *pmm_manager;$/;"	v	typeref:struct:pmm_manager
 pmm_manager	pmm.h	/^struct pmm_manager {$/;"	s
+pra_list_head	swap_extended_clock.c	/^list_entry_t pra_list_head;$/;"	v
 pra_list_head	swap_fifo.c	/^list_entry_t pra_list_head;$/;"	v
 pra_page_link	memlayout.h	/^    list_entry_t pra_page_link;     \/\/ used for pra (page replace algorithm)$/;"	m	struct:Page
 pra_vaddr	memlayout.h	/^    uintptr_t pra_vaddr;            \/\/ used for pra (page replace algorithm)$/;"	m	struct:Page
 print_free_link	default_pmm.c	/^void print_free_link(){$/;"	f
 print_pgdir	pmm.c	/^print_pgdir(void) {$/;"	f
+print_swap_page_info	swap_extended_clock.c	/^void print_swap_page_info(struct mm_struct* mm) {$/;"	f
+print_swap_page_info_inswap	swap.c	/^void print_swap_page_info_inswap(struct mm_struct* mm) {$/;"	f
 property	memlayout.h	/^    unsigned int property;          \/\/ the num of free block, used in first fit pm manager$/;"	m	struct:Page
 pte2page	pmm.h	/^pte2page(pte_t pte) {$/;"	f
 pte_t	memlayout.h	/^typedef uintptr_t pte_t;$/;"	t
+real_check_swap_extended_swap	swap.c	/^void real_check_swap_extended_swap() {$/;"	f
+real_check_swap_extended_swap_init	swap.c	/^void real_check_swap_extended_swap_init() {$/;"	f
 ref	memlayout.h	/^    int ref;                        \/\/ page frame's reference counter$/;"	m	struct:Page
 sd_avl	mmu.h	/^    unsigned sd_avl : 1;            \/\/ unused (available for software use)$/;"	m	struct:segdesc
 sd_base_15_0	mmu.h	/^    unsigned sd_base_15_0 : 16;     \/\/ low bits of segment base address$/;"	m	struct:segdesc
@@ -304,6 +317,7 @@ swap_init	swap.c	/^swap_init(void)$/;"	f
 swap_init_mm	swap.c	/^swap_init_mm(struct mm_struct *mm)$/;"	f
 swap_init_ok	swap.c	/^volatile int swap_init_ok = 0;$/;"	v
 swap_manager	swap.h	/^struct swap_manager$/;"	s
+swap_manager_extended_clock	swap_extended_clock.c	/^struct swap_manager swap_manager_extended_clock =$/;"	v	typeref:struct:swap_manager
 swap_manager_fifo	swap_fifo.c	/^struct swap_manager swap_manager_fifo =$/;"	v	typeref:struct:swap_manager
 swap_map_swappable	swap.c	/^swap_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, int swap_in)$/;"	f
 swap_offset	swap.h	25;"	d
@@ -365,3 +379,4 @@ vma_struct	vmm.h	/^struct vma_struct {$/;"	s
 vmm_init	vmm.c	/^vmm_init(void) {$/;"	f
 vpd	pmm.c	/^pde_t * const vpd = (pde_t *)PGADDR(PDX(VPT), PDX(VPT), 0);$/;"	v
 vpt	pmm.c	/^pte_t * const vpt = (pte_t *)VPT;$/;"	v
+waitcount	swap_extended_clock.c	/^static void waitcount(int count) {$/;"	f	file:

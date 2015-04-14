@@ -179,14 +179,12 @@ pgfault_handler(struct trapframe *tf) {
 
 static volatile int in_swap_tick_event = 0;
 #define swap_event_trigger 500
-extern struct mm_struct *check_mm_struct;
 static int 
 swap_tick_event_handler() {
     extern struct mm_struct *check_mm_struct;
     if (check_mm_struct != NULL) {
         swap_tick_event(check_mm_struct);
     }
-    panic("unhandled swap_tick_event.\n");
 }
 
 static void

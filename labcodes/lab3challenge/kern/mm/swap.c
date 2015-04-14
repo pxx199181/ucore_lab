@@ -47,7 +47,7 @@ swap_init(void)
      {
           swap_init_ok = 1;
           cprintf("SWAP: manager = %s\n", sm->name);
-          check_swap();
+          //check_swap();
      }
 
      return r;
@@ -175,6 +175,137 @@ extern free_area_t free_area;
 
 #define free_list (free_area.free_list)
 #define nr_free (free_area.nr_free)
+
+void print_swap_page_info_inswap(struct mm_struct* mm) {
+
+         list_entry_t *head=(list_entry_t*) mm->sm_priv;
+         list_entry_t *le;
+         cprintf("mm_addr:0x%x\n", mm);
+         cprintf("pte_addr list:\n");
+         le = head;
+         while((le = list_next(le)) != head){
+            struct Page* page = le2page(le, pra_page_link);
+            pte_t *ptep = get_pte(mm->pgdir, page->pra_vaddr, 0);
+            cprintf("0x%x->", *ptep);
+         }
+        cprintf("\n");
+         cprintf("pra_addr list:\n");
+         le = head;
+         while((le = list_next(le)) != head){
+            struct Page* page = le2page(le, pra_page_link);
+            cprintf("0x%x->",  page->pra_vaddr);
+         }
+        cprintf("\n");
+}
+void real_check_swap_extended_swap_init() {
+
+     int ret, count = 0, total = 0, i;
+     list_entry_t *le = &free_list;
+     while ((le = list_next(le)) != &free_list) {
+        struct Page *p = le2page(le, page_link);
+        assert(PageProperty(p));
+        count ++, total += p->property;
+     }
+     assert(total == nr_free_pages());
+     cprintf("BEGIN check_swap: count %d, total %d\n",count,total);
+     //now we set the phy pages env     
+     struct mm_struct *mm = mm_create();
+     assert(mm != NULL);
+
+     extern struct mm_struct *check_mm_struct;
+
+     check_mm_struct = mm;
+
+     pde_t *pgdir = mm->pgdir = boot_pgdir;
+     assert(pgdir[0] == 0);
+
+     struct vma_struct *vma = vma_create(BEING_CHECK_VALID_VADDR, CHECK_VALID_VADDR, VM_WRITE | VM_READ);
+     assert(vma != NULL);
+
+     insert_vma_struct(mm, vma);
+}
+void real_check_swap_extended_swap() {
+    
+     int ret, count = 0, total = 0, i;
+     list_entry_t *le = &free_list;
+
+     extern struct mm_struct *check_mm_struct;
+     struct mm_struct *mm = check_mm_struct;
+     pde_t *pgdir = mm->pgdir = boot_pgdir;
+
+     //setup the temp Page Table vaddr 0~4MB
+     cprintf("setup Page Table for vaddr 0X1000, so alloc a page\n");
+     pte_t *temp_ptep=NULL;
+     temp_ptep = get_pte(mm->pgdir, BEING_CHECK_VALID_VADDR, 1);
+     assert(temp_ptep!= NULL);
+     cprintf("setup Page Table vaddr 0~4MB OVER!\n");
+     
+     for (i=0;i<CHECK_VALID_PHY_PAGE_NUM;i++) {
+          check_rp[i] = alloc_page();
+          assert(check_rp[i] != NULL );
+          assert(!PageProperty(check_rp[i]));
+     }
+     list_entry_t free_list_store = free_list;
+     list_init(&free_list);
+     assert(list_empty(&free_list));
+     
+     //assert(alloc_page() == NULL);
+     
+     unsigned int nr_free_store = nr_free;
+     nr_free = 0;
+     for (i=0;i<CHECK_VALID_PHY_PAGE_NUM;i++) {
+        free_pages(check_rp[i],1);
+     }
+     assert(nr_free==CHECK_VALID_PHY_PAGE_NUM);
+     
+     cprintf("set up init env for check_swap begin!\n");
+     //setup initial vir_page<->phy_page environment for page relpacement algorithm 
+
+     
+     pgfault_num=0;
+     
+     check_content_set();
+     assert( nr_free == 0);         
+     for(i = 0; i<MAX_SEQ_NO ; i++) 
+         swap_out_seq_no[i]=swap_in_seq_no[i]=-1;
+     
+     for (i= 0;i<CHECK_VALID_PHY_PAGE_NUM;i++) {
+         check_ptep[i]=0;
+         check_ptep[i] = get_pte(pgdir, (i+1)*0x1000, 0);
+         //cprintf("i %d, check_ptep addr %x, value %x\n", i, check_ptep[i], *check_ptep[i]);
+         assert(check_ptep[i] != NULL);
+         assert(pte2page(*check_ptep[i]) == check_rp[i]);
+         assert((*check_ptep[i] & PTE_P));          
+     }
+     cprintf("set up init env for check_swap over!\n");
+     // now access the virt pages to test  page relpacement algorithm 
+     ret=check_content_access();
+     assert(ret==0);
+     
+     //restore kernel mem env
+     for (i=0;i<CHECK_VALID_PHY_PAGE_NUM;i++) {
+         free_pages(check_rp[i],1);
+     } 
+
+     //free_page(pte2page(*temp_ptep));
+     
+     check_mm_struct = NULL;
+     mm_destroy(mm);
+         
+     nr_free = nr_free_store;
+     free_list = free_list_store;
+
+     
+     le = &free_list;
+     while ((le = list_next(le)) != &free_list) {
+         struct Page *p = le2page(le, page_link);
+         count --, total -= p->property;
+     }
+     cprintf("count is %d, total is %d\n",count,total);
+     //assert(count == 0);
+     
+     cprintf("check_swap() succeeded!\n");
+}
 
 static void
 check_swap(void)

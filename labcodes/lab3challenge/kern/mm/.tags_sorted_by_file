@@ -286,20 +286,23 @@ pde2page	pmm.h	/^pde2page(pde_t pde) {$/;"	f
 pmm_manager	pmm.h	/^struct pmm_manager {$/;"	s
 pte2page	pmm.h	/^pte2page(pte_t pte) {$/;"	f
 set_page_ref	pmm.h	/^set_page_ref(struct Page *page, int val) {$/;"	f
-BEING_CHECK_VALID_VADDR	swap.c	12;"	d	file:
-CHECK_VALID_PHY_PAGE_NUM	swap.c	15;"	d	file:
-CHECK_VALID_VADDR	swap.c	13;"	d	file:
-CHECK_VALID_VIR_PAGE_NUM	swap.c	11;"	d	file:
-MAX_SEQ_NO	swap.c	17;"	d	file:
+BEING_CHECK_VALID_VADDR	swap.c	13;"	d	file:
+CHECK_VALID_PHY_PAGE_NUM	swap.c	16;"	d	file:
+CHECK_VALID_VADDR	swap.c	14;"	d	file:
+CHECK_VALID_VIR_PAGE_NUM	swap.c	12;"	d	file:
+MAX_SEQ_NO	swap.c	18;"	d	file:
 check_content_access	swap.c	/^check_content_access(void)$/;"	f	file:
 check_content_set	swap.c	/^check_content_set(void)$/;"	f	file:
 check_ptep	swap.c	/^pte_t * check_ptep[CHECK_VALID_PHY_PAGE_NUM];$/;"	v
 check_rp	swap.c	/^struct Page * check_rp[CHECK_VALID_PHY_PAGE_NUM];$/;"	v	typeref:struct:Page
 check_swap	swap.c	/^check_swap(void)$/;"	f	file:
 check_swap_addr	swap.c	/^unsigned int check_swap_addr[CHECK_VALID_VIR_PAGE_NUM];$/;"	v
-free_list	swap.c	174;"	d	file:
+free_list	swap.c	176;"	d	file:
 max_swap_offset	swap.c	/^size_t max_swap_offset;$/;"	v
-nr_free	swap.c	175;"	d	file:
+nr_free	swap.c	177;"	d	file:
+print_swap_page_info_inswap	swap.c	/^void print_swap_page_info_inswap(struct mm_struct* mm) {$/;"	f
+real_check_swap_extended_swap	swap.c	/^void real_check_swap_extended_swap() {$/;"	f
+real_check_swap_extended_swap_init	swap.c	/^void real_check_swap_extended_swap_init() {$/;"	f
 sm	swap.c	/^static struct swap_manager *sm;$/;"	v	typeref:struct:swap_manager	file:
 swap_in	swap.c	/^swap_in(struct mm_struct *mm, uintptr_t addr, struct Page **ptr_result)$/;"	f
 swap_in_seq_no	swap.c	/^unsigned int swap_in_seq_no[MAX_SEQ_NO],swap_out_seq_no[MAX_SEQ_NO];$/;"	v
@@ -325,6 +328,18 @@ swap_manager	swap.h	/^struct swap_manager$/;"	s
 swap_offset	swap.h	25;"	d
 swap_out_victim	swap.h	/^     int (*swap_out_victim) (struct mm_struct *mm, struct Page **ptr_page, int in_tick);$/;"	m	struct:swap_manager
 tick_event	swap.h	/^     int (*tick_event)      (struct mm_struct *mm);$/;"	m	struct:swap_manager
+_extended_clock_check_swap	swap_extended_clock.c	/^_extended_clock_check_swap(void) {$/;"	f	file:
+_extended_clock_init	swap_extended_clock.c	/^_extended_clock_init(void)$/;"	f	file:
+_extended_clock_init_mm	swap_extended_clock.c	/^_extended_clock_init_mm(struct mm_struct *mm)$/;"	f	file:
+_extended_clock_map_swappable	swap_extended_clock.c	/^_extended_clock_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, int swap_in)$/;"	f	file:
+_extended_clock_set_unswappable	swap_extended_clock.c	/^_extended_clock_set_unswappable(struct mm_struct *mm, uintptr_t addr)$/;"	f	file:
+_extended_clock_swap_out_victim	swap_extended_clock.c	/^_extended_clock_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, int in_tick)$/;"	f	file:
+_extended_clock_tick_event	swap_extended_clock.c	/^_extended_clock_tick_event(struct mm_struct *mm)$/;"	f	file:
+pra_list_head	swap_extended_clock.c	/^list_entry_t pra_list_head;$/;"	v
+print_swap_page_info	swap_extended_clock.c	/^void print_swap_page_info(struct mm_struct* mm) {$/;"	f
+swap_manager_extended_clock	swap_extended_clock.c	/^struct swap_manager swap_manager_extended_clock =$/;"	v	typeref:struct:swap_manager
+waitcount	swap_extended_clock.c	/^static void waitcount(int count) {$/;"	f	file:
+__KERN_MM_SWAP_extended_clock_H__	swap_extended_clock.h	2;"	d
 _fifo_check_swap	swap_fifo.c	/^_fifo_check_swap(void) {$/;"	f	file:
 _fifo_init	swap_fifo.c	/^_fifo_init(void)$/;"	f	file:
 _fifo_init_mm	swap_fifo.c	/^_fifo_init_mm(struct mm_struct *mm)$/;"	f	file:
@@ -335,7 +350,7 @@ _fifo_tick_event	swap_fifo.c	/^_fifo_tick_event(struct mm_struct *mm)$/;"	f	file
 pra_list_head	swap_fifo.c	/^list_entry_t pra_list_head;$/;"	v
 swap_manager_fifo	swap_fifo.c	/^struct swap_manager swap_manager_fifo =$/;"	v	typeref:struct:swap_manager
 __KERN_MM_SWAP_FIFO_H__	swap_fifo.h	2;"	d
-check_mm_struct	vmm.c	/^struct mm_struct *check_mm_struct;$/;"	v	typeref:struct:mm_struct
+check_mm_struct	vmm.c	/^struct mm_struct *check_mm_struct = NULL;$/;"	v	typeref:struct:mm_struct
 check_pgfault	vmm.c	/^check_pgfault(void) {$/;"	f	file:
 check_vma_overlap	vmm.c	/^check_vma_overlap(struct vma_struct *prev, struct vma_struct *next) {$/;"	f	file:
 check_vma_struct	vmm.c	/^check_vma_struct(void) {$/;"	f	file:
