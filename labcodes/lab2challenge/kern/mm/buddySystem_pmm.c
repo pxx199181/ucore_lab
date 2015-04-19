@@ -168,6 +168,7 @@ buddySystem_add_to_list(struct Page *t_base, size_t t_n) {
                 list_del(&(p->page_link));
                 nr_free(i) -= p->property;
                 p->property = 0;
+                ClearPageProperty(p);
                 i++;
                 base = p > base ? base : p;
                 pageIndex = GetIndexFromPage(base);
@@ -178,6 +179,7 @@ buddySystem_add_to_list(struct Page *t_base, size_t t_n) {
         list_add(&free_list(i), &(base->page_link));
         base->buddy_layer = i;
         base->property = 1 << i;
+        SetPageProperty(base);
         nr_free(i) += base->property;
         
         base += base->property;
@@ -231,6 +233,7 @@ buddySystem_alloc_pages(size_t n) {
             list_del(le);
             p = le2page(le, page_link);
             p->property = n;
+            ClearPageProperty(p);
             nr_free(i) -= (1 << i);
 
             p->buddy_layer = -1;

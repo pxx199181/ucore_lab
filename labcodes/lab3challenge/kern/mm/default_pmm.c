@@ -108,6 +108,7 @@ default_alloc_pages(size_t n) {
         list_del(&(page->page_link));
         if (page->property > n) {
             struct Page *p = page + n;
+            SetPageProperty(p);
             p->property = page->property - n;
 
             //before code
@@ -161,6 +162,7 @@ default_free_pages(struct Page *base, size_t n) {
             p->property += base->property;
             ClearPageProperty(base);
             base = p;
+            SetPageProperty(p);
             list_del(&(p->page_link));
         }
         //modified by pxx --------------begin

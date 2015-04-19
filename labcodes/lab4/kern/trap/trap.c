@@ -169,6 +169,7 @@ print_pgfault(struct trapframe *tf) {
 
 static int
 pgfault_handler(struct trapframe *tf) {
+    cprintf("page fault\n");
     extern struct mm_struct *check_mm_struct;
     print_pgfault(tf);
     if (check_mm_struct != NULL) {
