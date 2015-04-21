@@ -313,15 +313,16 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
     copy_mm(clone_flags, proc);
     setup_kstack(proc);
     copy_thread(proc, stack, tf);
-    
+
     bool intr_flag;
     local_intr_save(intr_flag);
-
+    //atomic
     proc->pid = get_pid();
     hash_proc(proc);
-    wakeup_proc(proc);
     nr_process++;
+
     local_intr_restore(intr_flag);
+    wakeup_proc(proc);
     ret = proc->pid;
 
 fork_out:
