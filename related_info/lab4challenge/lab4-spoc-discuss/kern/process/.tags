@@ -1,0 +1,70 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+MAX_PID	proc.h	38;"	d
+MAX_PROCESS	proc.h	37;"	d
+PROC_NAME_LEN	proc.h	36;"	d
+PROC_RUNNABLE	proc.h	/^    PROC_RUNNABLE,    \/\/ runnable(maybe running)$/;"	e	enum:proc_state
+PROC_SLEEPING	proc.h	/^    PROC_SLEEPING,    \/\/ sleeping$/;"	e	enum:proc_state
+PROC_UNINIT	proc.h	/^    PROC_UNINIT = 0,  \/\/ uninitialized$/;"	e	enum:proc_state
+PROC_ZOMBIE	proc.h	/^    PROC_ZOMBIE,      \/\/ almost dead, and wait parent proc to reclaim his resource$/;"	e	enum:proc_state
+WT_CHILD	proc.h	57;"	d
+__KERN_PROCESS_PROC_H__	proc.h	2;"	d
+alloc_proc	proc.c	/^alloc_proc(void) {$/;"	f	file:
+context	proc.h	/^    struct context context;                     \/\/ Switch here to run process$/;"	m	struct:proc_struct	typeref:struct:proc_struct::context
+context	proc.h	/^struct context {$/;"	s
+copy_thread	proc.c	/^copy_thread(struct proc_struct *proc, uintptr_t esp, struct trapframe *tf) {$/;"	f	file:
+cpu_idle	proc.c	/^cpu_idle(void) {$/;"	f
+cr3	proc.h	/^    uintptr_t cr3;                              \/\/ CR3 register: the base addr of Page Directroy Table(PDT)$/;"	m	struct:proc_struct
+current	proc.c	/^struct proc_struct *current = NULL;$/;"	v	typeref:struct:proc_struct
+do_exit	proc.c	/^do_exit(int error_code) {$/;"	f
+do_fork	proc.c	/^do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {$/;"	f
+do_wait	proc.c	/^do_wait(int pid, int *code_store) {$/;"	f
+ebp	proc.h	/^    uint32_t ebp;$/;"	m	struct:context
+ebx	proc.h	/^    uint32_t ebx;$/;"	m	struct:context
+ecx	proc.h	/^    uint32_t ecx;$/;"	m	struct:context
+edi	proc.h	/^    uint32_t edi;$/;"	m	struct:context
+edx	proc.h	/^    uint32_t edx;$/;"	m	struct:context
+eip	proc.h	/^    uint32_t eip;$/;"	m	struct:context
+esi	proc.h	/^    uint32_t esi;$/;"	m	struct:context
+esp	proc.h	/^    uint32_t esp;$/;"	m	struct:context
+find_proc	proc.c	/^find_proc(int pid) {$/;"	f
+flags	proc.h	/^    uint32_t flags;                             \/\/ Process flag$/;"	m	struct:proc_struct
+forkret	proc.c	/^forkret(void) {$/;"	f	file:
+get_pid	proc.c	/^get_pid(void) {$/;"	f	file:
+get_proc_name	proc.c	/^get_proc_name(struct proc_struct *proc) {$/;"	f
+idleproc	proc.c	/^struct proc_struct *idleproc = NULL;$/;"	v	typeref:struct:proc_struct
+init_main	proc.c	/^init_main(void *arg) {$/;"	f	file:
+initproc1	proc.c	/^struct proc_struct *initproc1 = NULL;$/;"	v	typeref:struct:proc_struct
+initproc2	proc.c	/^struct proc_struct *initproc2 = NULL;$/;"	v	typeref:struct:proc_struct
+initproc3	proc.c	/^struct proc_struct *initproc3 = NULL;$/;"	v	typeref:struct:proc_struct
+initproc4	proc.c	/^struct proc_struct *initproc4 = NULL;$/;"	v	typeref:struct:proc_struct
+kernel_thread	proc.c	/^kernel_thread(int (*fn)(void *), void *arg, uint32_t clone_flags) {$/;"	f
+kernel_thread_entry	entry.S	/^kernel_thread_entry:        # void kernel_thread(void)$/;"	l
+kstack	proc.h	/^    uintptr_t kstack;                           \/\/ Process kernel stack$/;"	m	struct:proc_struct
+le2proc	proc.h	59;"	d
+list_link	proc.h	/^    list_entry_t list_link;                     \/\/ Process link list $/;"	m	struct:proc_struct
+name	proc.h	/^    char name[PROC_NAME_LEN + 1];               \/\/ Process name$/;"	m	struct:proc_struct
+need_resched	proc.h	/^    volatile bool need_resched;                 \/\/ bool value: need to be rescheduled to release CPU?$/;"	m	struct:proc_struct
+nr_process	proc.c	/^static int nr_process = 0;$/;"	v	file:
+parent	proc.h	/^    struct proc_struct *parent;                 \/\/ the parent process$/;"	m	struct:proc_struct	typeref:struct:proc_struct::proc_struct
+pid	proc.h	/^    int pid;                                    \/\/ Process ID$/;"	m	struct:proc_struct
+proc_init	proc.c	/^proc_init(void) {$/;"	f
+proc_list	proc.c	/^list_entry_t proc_list;$/;"	v
+proc_run	proc.c	/^proc_run(struct proc_struct *proc) {$/;"	f
+proc_state	proc.h	/^enum proc_state {$/;"	g
+proc_struct	proc.h	/^struct proc_struct {$/;"	s
+put_kstack	proc.c	/^put_kstack(struct proc_struct *proc) {$/;"	f	file:
+remove_links	proc.c	/^remove_links(struct proc_struct *proc) {$/;"	f	file:
+runs	proc.h	/^    int runs;                                   \/\/ the running times of Proces$/;"	m	struct:proc_struct
+set_proc_name	proc.c	/^set_proc_name(struct proc_struct *proc, const char *name) {$/;"	f
+setup_kstack	proc.c	/^setup_kstack(struct proc_struct *proc) {$/;"	f	file:
+sleep_func	proc.c	/^void sleep_func(void *args) { $/;"	f
+state	proc.h	/^    enum proc_state state;                      \/\/ Process state$/;"	m	struct:proc_struct	typeref:enum:proc_struct::proc_state
+switch_to	switch.S	/^switch_to:                      # switch_to(from, to)$/;"	l
+tf	proc.h	/^    struct trapframe *tf;                       \/\/ Trap frame for current interrupt$/;"	m	struct:proc_struct	typeref:struct:proc_struct::trapframe
+wait_state	proc.h	/^    uint32_t wait_state;                        \/\/ waiting state$/;"	m	struct:proc_struct
+wake_up_func	proc.c	/^void wake_up_func(void *args) {$/;"	f
