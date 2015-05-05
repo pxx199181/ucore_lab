@@ -452,7 +452,7 @@
 	     assert(head != NULL);
 	     assert(in_tick==0);
 	     /* Select the victim */
-	     /*LAB3 EXERCISE 2: YOUR CODE*/ 
+	     /*LAB3 EXERCISE 2: P14226010*/ 
 	     //(1)  unlink the  earliest arrival page in front of pra_list_head qeueue
 	     //(2)  set the addr of addr of this page to ptr_page
 	     if (list_empty(head)) {
