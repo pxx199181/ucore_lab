@@ -87,7 +87,7 @@ static struct proc_struct *
 alloc_proc(void) {
     struct proc_struct *proc = kmalloc(sizeof(struct proc_struct));
     if (proc != NULL) {
-    //LAB4:EXERCISE1 YOUR CODE
+    //LAB4:EXERCISE1 P14226010
     /*
      * below fields in proc_struct need to be initialized
      *       enum proc_state state;                      // Process state
@@ -115,7 +115,7 @@ alloc_proc(void) {
         proc->cr3 = boot_cr3;
         proc->flags = 0;
         memset(proc->name, 0, PROC_NAME_LEN);
-     //LAB5 YOUR CODE : (update LAB4 steps)
+     //LAB5 P14226010 : (update LAB4 steps)
     /*
      * below fields(add in LAB5) in proc_struct need to be initialized	
      *       uint32_t wait_state;                        // waiting state
@@ -217,7 +217,27 @@ proc_run(struct proc_struct *proc) {
             current = proc;
             load_esp0(next->kstack + KSTACKSIZE);
             lcr3(next->cr3);
+            cprintf("switch schedule : %s\n", current->name);
+            /*
+                uint32_t eip;
+                uint32_t esp;
+                uint32_t ebx;
+                uint32_t ecx;
+                uint32_t edx;
+                uint32_t esi;
+                uint32_t edi;
+                uint32_t ebp;
+             */
+            cprintf("  eip   0x----%08x\n", next->context.eip);
+            cprintf("  esp   0x----%08x\n", next->context.esp);
+            cprintf("  ebx   0x----%08x\n", next->context.ebx);
+            cprintf("  ecx   0x----%08x\n", next->context.ecx);
+            cprintf("  edx   0x----%08x\n", next->context.edx);
+            cprintf("  esi   0x----%08x\n", next->context.esi);
+            cprintf("  edi   0x----%08x\n", next->context.edi);
+            cprintf("  ebp   0x----%08x\n", next->context.ebp);
             switch_to(&(prev->context), &(next->context));
+            cprintf("switch schedule over: %s\n", current->name);
         }
         local_intr_restore(intr_flag);
     }
@@ -384,7 +404,7 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
         goto fork_out;
     }
     ret = -E_NO_MEM;
-    //LAB4:EXERCISE2 YOUR CODE
+    //LAB4:EXERCISE2 P14226010
     /*
      * Some Useful MACROs, Functions and DEFINEs, you can use them in below implementation.
      * MACROs or Functions:
@@ -440,7 +460,7 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
 
     ret = proc->pid;
 
-    //LAB5 YOUR CODE : (update LAB4 steps)
+    //LAB5 P14226010 : (update LAB4 steps)
    /* Some Functions
     *    set_links:  set the relation links of process.  ALSO SEE: remove_links:  lean the relation links of process 
     *    -------------------
@@ -470,6 +490,7 @@ do_exit(int error_code) {
     if (current == initproc) {
         panic("initproc exit.\n");
     }
+    cprintf("%s exit\n", current->name);
     
     struct mm_struct *mm = current->mm;
     if (mm != NULL) {
@@ -511,6 +532,7 @@ do_exit(int error_code) {
     }
     local_intr_restore(intr_flag);
     
+    cprintf("%s exit over\n", current->name);
     schedule();
     panic("do_exit will not return!! %d.\n", current->pid);
 }
@@ -637,7 +659,7 @@ load_icode(unsigned char *binary, size_t size) {
     //(6) setup trapframe for user environment
     struct trapframe *tf = current->tf;
     memset(tf, 0, sizeof(struct trapframe));
-    /* LAB5:EXERCISE1 YOUR CODE
+    /* LAB5:EXERCISE1 P14226010
      * should set tf_cs,tf_ds,tf_es,tf_ss,tf_esp,tf_eip,tf_eflags
      * NOTICE: If we set trapframe correctly, then the user level process can return to USER MODE from kernel. So
      *          tf_cs should be USER_CS segment (see memlayout.h)
@@ -715,6 +737,7 @@ do_yield(void) {
 // NOTE: only after do_wait function, all resources of the child proces are free.
 int
 do_wait(int pid, int *code_store) {
+    cprintf("here\n");
     struct mm_struct *mm = current->mm;
     if (code_store != NULL) {
         if (!user_mem_check(mm, (uintptr_t)code_store, sizeof(int), 1)) {
@@ -722,6 +745,7 @@ do_wait(int pid, int *code_store) {
         }
     }
 
+    cprintf("here end\n");
     struct proc_struct *proc;
     bool intr_flag, haskid;
 repeat:
@@ -747,6 +771,7 @@ repeat:
     if (haskid) {
         current->state = PROC_SLEEPING;
         current->wait_state = WT_CHILD;
+        cprintf("here schedule\n");
         schedule();
         if (current->flags & PF_EXITING) {
             do_exit(-E_KILLED);

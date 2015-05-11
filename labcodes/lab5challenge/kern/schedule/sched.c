@@ -44,6 +44,7 @@ schedule(void) {
         }
         next->runs ++;
         if (next != current) {
+            cprintf("run schedule\n");
             proc_run(next);
         }
     }
