@@ -1,0 +1,47 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+MAX_TIME_SLICE	sched.h	8;"	d
+RR_dequeue	default_sched.c	/^RR_dequeue(struct run_queue *rq, struct proc_struct *proc) {$/;"	f	file:
+RR_enqueue	default_sched.c	/^RR_enqueue(struct run_queue *rq, struct proc_struct *proc) {$/;"	f	file:
+RR_init	default_sched.c	/^RR_init(struct run_queue *rq) {$/;"	f	file:
+RR_pick_next	default_sched.c	/^RR_pick_next(struct run_queue *rq) {$/;"	f	file:
+RR_proc_tick	default_sched.c	/^RR_proc_tick(struct run_queue *rq, struct proc_struct *proc) {$/;"	f	file:
+__KERN_SCHEDULE_SCHED_H__	sched.h	2;"	d
+__KERN_SCHEDULE_SCHED_RR_H__	default_sched.h	2;"	d
+__rq	sched.c	/^static struct run_queue __rq;$/;"	v	typeref:struct:run_queue	file:
+add_timer	sched.c	/^add_timer(timer_t *timer) {$/;"	f
+default_sched_class	default_sched.c	/^struct sched_class default_sched_class = {$/;"	v	typeref:struct:sched_class
+del_timer	sched.c	/^del_timer(timer_t *timer) {$/;"	f
+dequeue	sched.h	/^    void (*dequeue)(struct run_queue *rq, struct proc_struct *proc);$/;"	m	struct:sched_class
+enqueue	sched.h	/^    void (*enqueue)(struct run_queue *rq, struct proc_struct *proc);$/;"	m	struct:sched_class
+expires	sched.h	/^    unsigned int expires;       \/\/the expire time$/;"	m	struct:__anon1
+init	sched.h	/^    void (*init)(struct run_queue *rq);$/;"	m	struct:sched_class
+lab6_run_pool	sched.h	/^    skew_heap_entry_t *lab6_run_pool;$/;"	m	struct:run_queue
+le2timer	sched.h	18;"	d
+max_time_slice	sched.h	/^    int max_time_slice;$/;"	m	struct:run_queue
+name	sched.h	/^    const char *name;$/;"	m	struct:sched_class
+pick_next	sched.h	/^    struct proc_struct *(*pick_next)(struct run_queue *rq);$/;"	m	struct:sched_class	typeref:struct:sched_class::pick_next
+proc	sched.h	/^    struct proc_struct *proc;   \/\/the proc wait in this timer. If the expire time is end, then this proc will be scheduled$/;"	m	struct:__anon1	typeref:struct:__anon1::proc_struct
+proc_num	sched.h	/^    unsigned int proc_num;$/;"	m	struct:run_queue
+proc_tick	sched.h	/^    void (*proc_tick)(struct run_queue *rq, struct proc_struct *proc);$/;"	m	struct:sched_class
+rq	sched.c	/^static struct run_queue *rq;$/;"	v	typeref:struct:run_queue	file:
+run_list	sched.h	/^    list_entry_t run_list;$/;"	m	struct:run_queue
+run_queue	sched.h	/^struct run_queue {$/;"	s
+run_timer_list	sched.c	/^run_timer_list(void) {$/;"	f
+sched_class	sched.c	/^static struct sched_class *sched_class;$/;"	v	typeref:struct:sched_class	file:
+sched_class	sched.h	/^struct sched_class {$/;"	s
+sched_class_dequeue	sched.c	/^sched_class_dequeue(struct proc_struct *proc) {$/;"	f	file:
+sched_class_enqueue	sched.c	/^sched_class_enqueue(struct proc_struct *proc) {$/;"	f	file:
+sched_class_pick_next	sched.c	/^sched_class_pick_next(void) {$/;"	f	file:
+sched_class_proc_tick	sched.c	/^sched_class_proc_tick(struct proc_struct *proc) {$/;"	f	file:
+sched_init	sched.c	/^sched_init(void) {$/;"	f
+schedule	sched.c	/^schedule(void) {$/;"	f
+timer_init	sched.h	/^timer_init(timer_t *timer, struct proc_struct *proc, int expires) {$/;"	f
+timer_link	sched.h	/^    list_entry_t timer_link;    \/\/the timer list$/;"	m	struct:__anon1
+timer_list	sched.c	/^static list_entry_t timer_list;$/;"	v	file:
+timer_t	sched.h	/^} timer_t;$/;"	t	typeref:struct:__anon1
+wakeup_proc	sched.c	/^wakeup_proc(struct proc_struct *proc) {$/;"	f

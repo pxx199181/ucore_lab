@@ -1,0 +1,3 @@
+break kern_init
+break do_fork
+break * dup_mmap

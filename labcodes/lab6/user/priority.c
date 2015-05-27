@@ -34,6 +34,7 @@ main(void) {
                acc[i] = 0;
                while (1) {
                     spin_delay();
+                     //cprintf("child pid %d, acc %d, time %d, gettime_msec %d\n",getpid(),acc[i],time, gettime_msec());
                     ++ acc[i];
                     if(acc[i]%4000==0) {
                         if((time=gettime_msec())>MAX_TIME) {

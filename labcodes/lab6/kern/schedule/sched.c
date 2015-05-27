@@ -4,7 +4,7 @@
 #include <sched.h>
 #include <stdio.h>
 #include <assert.h>
-#include <default_sched.h>
+#include <default_sched_stride.h>
 
 // the list of timer
 static list_entry_t timer_list;
@@ -77,6 +77,7 @@ wakeup_proc(struct proc_struct *proc) {
 
 void
 schedule(void) {
+    //cprintf("before change, in schedule:%s\n", current->name);
     bool intr_flag;
     struct proc_struct *next;
     local_intr_save(intr_flag);
@@ -96,6 +97,7 @@ schedule(void) {
             proc_run(next);
         }
     }
+    //cprintf("after change, in schedule:%s\n", current->name);
     local_intr_restore(intr_flag);
 }
 

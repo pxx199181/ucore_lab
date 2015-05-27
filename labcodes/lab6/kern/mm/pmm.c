@@ -363,7 +363,7 @@ pmm_init(void) {
 // return vaule: the kernel virtual address of this pte
 pte_t *
 get_pte(pde_t *pgdir, uintptr_t la, bool create) {
-    /* LAB2 EXERCISE 2: YOUR CODE
+    /* LAB2 EXERCISE 2: P14226010
      *
      * If you need to visit a physical address, please use KADDR()
      * please read pmm.h for useful macros
@@ -384,6 +384,19 @@ get_pte(pde_t *pgdir, uintptr_t la, bool create) {
      *   PTE_W           0x002                   // page table/directory entry flags bit : Writeable
      *   PTE_U           0x004                   // page table/directory entry flags bit : User can access
      */
+    
+    pde_t *tmp_pde = &pgdir[PDX(la)];
+    if (!(*tmp_pde & PTE_P)) {
+        struct Page* new_page = NULL;
+        if (create && (new_page = alloc_page()) != NULL) {
+            set_page_ref(new_page, 1);
+            memset(page2kva(new_page), 0, PGSIZE);
+            *tmp_pde = page2pa(new_page) | PTE_P | PTE_W | PTE_U;
+        }
+        else
+            return NULL;
+    }
+    return &((pte_t *)KADDR((*tmp_pde)&0xFFFFF000))[PTX(la)];
 #if 0
     pde_t *pdep = NULL;   // (1) find page directory entry
     if (0) {              // (2) check if entry is not present
@@ -416,7 +429,7 @@ get_page(pde_t *pgdir, uintptr_t la, pte_t **ptep_store) {
 //note: PT is changed, so the TLB need to be invalidate 
 static inline void
 page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
-    /* LAB2 EXERCISE 3: YOUR CODE
+    /* LAB2 EXERCISE 3: P14226010
      *
      * Please check if ptep is valid, and tlb must be manually updated if mapping is updated
      *
@@ -432,6 +445,15 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
      * DEFINEs:
      *   PTE_P           0x001                   // page table/directory entry flags bit : Present
      */
+    if (!(*ptep & PTE_P)) {
+        return ;
+    }
+    struct Page* page = pte2page(*ptep);
+    if (page_ref_dec(page) == 0){
+        free_page(page);
+    }
+    *ptep = 0;
+    tlb_invalidate(pgdir, la);
 #if 0
     if (0) {                      //(1) check if this page table entry is present
         struct Page *page = NULL; //(2) find corresponding page to pte
@@ -508,7 +530,7 @@ copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end, bool share) {
         assert(page!=NULL);
         assert(npage!=NULL);
         int ret=0;
-        /* LAB5:EXERCISE2 YOUR CODE
+        /* LAB5:EXERCISE2 P14226010
          * replicate content of page to npage, build the map of phy addr of nage with the linear addr start
          *
          * Some Useful MACROs and DEFINEs, you can use them in below implementation.
@@ -522,6 +544,12 @@ copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end, bool share) {
          * (3) memory copy from src_kvaddr to dst_kvaddr, size is PGSIZE
          * (4) build the map of phy addr of  nage with the linear addr start
          */
+         uintptr_t src_kvaddr = page2kva(page);
+         uintptr_t dst_kvaddr = page2kva(npage);
+         memcpy(dst_kvaddr, src_kvaddr, PGSIZE);
+         //page_insert(pde_t *pgdir, struct Page *page, uintptr_t la, uint32_t perm)
+         ret = page_insert(to, npage, start, perm);
+
         assert(ret == 0);
         }
         start += PGSIZE;

@@ -49,8 +49,18 @@ _fifo_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, int
  
     assert(entry != NULL && head != NULL);
     //record the page access situlation
-    /*LAB3 EXERCISE 2: YOUR CODE*/ 
+    /*LAB3 EXERCISE 2: P14226010*/ 
     //(1)link the most recent arrival page at the back of the pra_list_head qeueue.
+    
+    //pxx-code
+    // double link list, so add link before the head means add it to the end of list
+    list_add_before(head, entry);
+    /*
+    //what is the use of swap_in
+    if (swap_in == 1) {
+        list_add_before(head, entry);
+    }
+    */
     return 0;
 }
 /*
@@ -61,12 +71,20 @@ static int
 _fifo_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, int in_tick)
 {
      list_entry_t *head=(list_entry_t*) mm->sm_priv;
-         assert(head != NULL);
+     assert(head != NULL);
      assert(in_tick==0);
      /* Select the victim */
-     /*LAB3 EXERCISE 2: YOUR CODE*/ 
+     /*LAB3 EXERCISE 2: P14226010*/ 
      //(1)  unlink the  earliest arrival page in front of pra_list_head qeueue
      //(2)  set the addr of addr of this page to ptr_page
+     if (list_empty(head)) {
+        cprintf("list is empty\n");
+        return -1;
+     }
+     list_entry_t *out_page_le = list_next(head);
+     list_del(out_page_le);
+     *ptr_page = le2page(out_page_le, pra_page_link);
+
      return 0;
 }
 
