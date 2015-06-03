@@ -205,7 +205,8 @@ extern struct mm_struct *check_mm_struct;
 static void
 trap_dispatch(struct trapframe *tf) {
     char c;
-    int ret;
+
+    int ret=0;
 
     switch (tf->tf_trapno) {
     case T_PGFLT:  //page fault
@@ -242,10 +243,7 @@ trap_dispatch(struct trapframe *tf) {
         /* you should upate you lab1 code (just add ONE or TWO lines of code):
          *    Every TICK_NUM cycle, you should set current process's current->need_resched = 1
          */
-        /* LAB6 YOUR CODE */
-
-
-
+        /* LAB6 P14226010 */
         /* IMPORTANT FUNCTIONS:
 	     * run_timer_list
 	     *----------------------
