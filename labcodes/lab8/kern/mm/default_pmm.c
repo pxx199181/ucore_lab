@@ -9,7 +9,7 @@
    usually split, and the remainder added to the list as another free block.
    Please see Page 196~198, Section 8.2 of Yan Wei Ming's chinese book "Data Structure -- C programming language"
 */
-// LAB2 EXERCISE 1: YOUR CODE
+// LAB2 EXERCISE 1: P14226010
 // you should rewrite functions: default_init,default_init_memmap,default_alloc_pages, default_free_pages.
 /*
  * Details of FFMA
@@ -77,7 +77,12 @@ default_init_memmap(struct Page *base, size_t n) {
     base->property = n;
     SetPageProperty(base);
     nr_free += n;
-    list_add(&free_list, &(base->page_link));
+    //before code
+    //list_add(&free_list, &(base->page_link));
+    
+    //modified by pxx --------------begin
+    list_add_before(&free_list, &(base->page_link));
+    //modified by pxx --------------end
 }
 
 static struct Page *
@@ -85,7 +90,7 @@ default_alloc_pages(size_t n) {
     assert(n > 0);
     if (n > nr_free) {
         return NULL;
-    }
+    } 
     struct Page *page = NULL;
     list_entry_t *le = &free_list;
     while ((le = list_next(le)) != &free_list) {
@@ -96,12 +101,32 @@ default_alloc_pages(size_t n) {
         }
     }
     if (page != NULL) {
+        //modified by pxx --------------begin
+        list_entry_t* pre_save = page->page_link.prev;
+        //modified by pxx --------------end
+        
         list_del(&(page->page_link));
         if (page->property > n) {
             struct Page *p = page + n;
+            SetPageProperty(p);
             p->property = page->property - n;
-            list_add(&free_list, &(p->page_link));
-    }
+
+            //before code
+            //list_add(&free_list, &(p->page_link));
+            
+            //modified by pxx --------------begin
+            list_add_after(pre_save, &(p->page_link));
+            //modified by pxx --------------end
+        }
+        //modified by pxx --------------begin
+        struct Page *p = page;
+        for (; p != page + n; p ++) {
+            //why not 1, is referenced,(solved, 1 is seted later)
+            set_page_ref(p, 0);
+            //assert(page_ref(p) == 0);
+        }
+        //modified by pxx --------------end
+        //
         nr_free -= n;
         ClearPageProperty(page);
     }
@@ -120,6 +145,11 @@ default_free_pages(struct Page *base, size_t n) {
     base->property = n;
     SetPageProperty(base);
     list_entry_t *le = list_next(&free_list);
+    //modified by pxx --------------begin
+    list_entry_t *le_pos = &free_list;
+    bool is_find_big_one = 0;
+    //modified by pxx --------------end
+
     while (le != &free_list) {
         p = le2page(le, page_link);
         le = list_next(le);
@@ -132,11 +162,36 @@ default_free_pages(struct Page *base, size_t n) {
             p->property += base->property;
             ClearPageProperty(base);
             base = p;
+            SetPageProperty(base);
             list_del(&(p->page_link));
         }
+        //modified by pxx --------------begin
+        else if (is_find_big_one == 0 && p > base)
+        {
+            is_find_big_one = 1;
+
+            le_pos = list_prev(le);
+            break;
+            /* code */
+        }
+        //modified by pxx --------------end
     }
     nr_free += n;
-    list_add(&free_list, &(base->page_link));
+    //before code
+    //list_add(&free_list, &(base->page_link));
+    
+    //modified by pxx --------------begin
+    list_add_before(le_pos, &(base->page_link));
+    //modified by pxx --------------end
+}
+//function added by pxx
+void print_free_link(){
+    list_entry_t *le = &free_list;
+    cprintf("------------------------mem-map------------------------\n");
+    while ((le = list_next(le)) != &free_list) {
+        struct Page *p = le2page(le, page_link);
+        cprintf("addr:%08x,size:%d, nextPos:%08x\n", p, p->property, p + p->property);
+    }
 }
 
 static size_t
